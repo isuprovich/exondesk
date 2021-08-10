@@ -8,7 +8,12 @@ import { useSnackbar } from 'notistack';
 
 const AuthPaper = styled(Paper)`
   padding: 32px;
-  margin-top: 32px
+`
+const AuthContainer = styled(Container)`
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
 `
 const LoginPage: React.FC = () => {
   const auth = useContext(AuthContext)
@@ -34,7 +39,7 @@ const LoginPage: React.FC = () => {
   }
 
   return <>
-    <Container maxWidth="sm">
+    <AuthContainer>
       <AuthPaper variant='outlined'>
         <Typography variant="h4" gutterBottom align="center">
           {isSignUp ? <span>Вход в Exondesk</span> : <span>Регистрация в Exondesk</span>}
@@ -95,7 +100,7 @@ const LoginPage: React.FC = () => {
           </Grid>
         </form>
       </AuthPaper>
-    </Container>
+    </AuthContainer>
 
   </>
 }

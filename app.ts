@@ -2,8 +2,6 @@ import express, {Request, Response} from 'express'
 import mongoose from 'mongoose'
 import config from 'config'
 import path from 'path'
-// import { json } from 'body-parser'
-import { kanbanRouter } from './src/routes/kanban'
 
 const app = express()
 const PORT: number = config.get('port')
@@ -12,7 +10,9 @@ const mongoUrl: string = config.get('mongoUrl')
 //@ts-ignore
 app.use(express.json({extended: true}))
 app.use('/api/auth', require('./src/routes/auth.routes'))
-app.use(kanbanRouter)
+app.use('/api/users', require('./src/routes/users.routes'))
+app.use('/api/tasks', require('./src/routes/tasks.routes'))
+app.use('/api/kanban', require('./src/routes/kanban.routes'))
 
 if (process.env.NODE_ENV === 'production') {
     app.use('/', express.static(path.join(__dirname, 'client', 'build')))
@@ -27,7 +27,11 @@ const runServer = async () => {
             useCreateIndex: true,
             useNewUrlParser: true,
             useUnifiedTopology: true
-        }, () => { console.log(`Connected to ${mongoUrl}`) })
+        }, () => {
+            // console.log(`Connected to ${mongoUrl}`)
+        })
+        mongoose.connection.once('open', () => {console.log(`Connected to ${mongoUrl}`)})
+        mongoose.connection.on('error', error => {console.log('Cannot connect to MongoDB')})
         app.listen(process.env.PORT || PORT, () => console.log(`Server is listening port ${PORT}`))
     } catch (error) {
         console.log(`Server error: ${error.message}`)

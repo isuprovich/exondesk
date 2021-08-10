@@ -1,10 +1,10 @@
 import React from 'react'
-import { BrowserRouter as Router } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import { useRoutes } from './routes'
 import { useAuth } from './hooks/auth.hook'
 import { SnackbarProvider } from 'notistack';
 import { AuthContext } from './context/AuthContext'
-import { CssBaseline } from '@material-ui/core'
+import { CssBaseline, Drawer } from '@material-ui/core'
 import Navbar from './components/Navbar'
 
 const App: React.FC = () => {
@@ -12,20 +12,20 @@ const App: React.FC = () => {
   const isAuth = !!token
   const routes = useRoutes(isAuth)
 
-  if(!ready) {
+  if (!ready) {
     return <>
-    <CssBaseline />
-    LOADING
+      <CssBaseline />
+      LOADING
     </>
   }
   return <>
     <SnackbarProvider>
       <AuthContext.Provider value={{ token, login, logout, userId, isAuth }}>
         <CssBaseline />
-        {isAuth && <Navbar logout={logout} />}
-        <Router>
+        <BrowserRouter>
+          {isAuth && <Navbar logout={logout} />}
           {routes}
-        </Router>
+        </BrowserRouter>
       </AuthContext.Provider>
     </SnackbarProvider>
   </>

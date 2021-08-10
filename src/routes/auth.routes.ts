@@ -13,8 +13,7 @@ type TLoginPayload = {
 }
 
 // /api/auth/register
-router.post(
-    '/register',
+router.post('/register',
     [
         check('email', 'Некорректный E-Mail').isEmail(),
         check('password', 'Минимальная длина пароля 6 символов').isLength({ min: 6 })
@@ -36,14 +35,12 @@ router.post(
             await user.save()
             res.status(201).json({ message: 'Пользователь успешно зарегистрирован' })
         } catch (e) {
-            console.log(e)
             res.status(500).json({ message: e })
         }
     })
 
 // /api/auth/login
-router.post(
-    '/login',
+router.post('/login',
     [
         check('email', 'Введите корректный E-Mail').normalizeEmail().isEmail(),
         check('password', 'Введите пароль').exists()

@@ -2,12 +2,12 @@ import express, {Request, Response} from 'express'
 
 const router = express.Router()
 
-router.get('/api/kanban', [], (req: Request, res: Response) => {
+router.get('/', [], (req: Request, res: Response) => {
     return res.send('get kanban')
 })
 
-router.post('/api/kanban', [], (req: Request, res: Response) => {
+router.post('/', [], (req: Request, res: Response) => {
     return res.send('post kanban')
 })
 
-export {router as kanbanRouter}
+module.exports = router
