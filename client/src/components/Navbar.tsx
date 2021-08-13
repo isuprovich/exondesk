@@ -1,67 +1,138 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Controller, useForm } from 'react-hook-form';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import { Drawer, List, ListItem } from '@material-ui/core';
-import { useState } from 'react';
+import { Divider, Drawer, Grid, TextField } from '@material-ui/core';
 import styled from 'styled-components';
-import { NavLink, BrowserRouter, Switch } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import s from '../fonts/logo.module.css'
 
-const NavDrawer = styled.div`
-  padding: 16px;
-`
-const NavLinkS = styled(NavLink)`
-  color: black;
-  
+type TProfileEditDrawer = {
+  isProfileEdit: boolean,
+  setProfileEdit: (isProfileEdit: boolean) => void
+}
+
+const ProfileEditDrawer: React.FC<TProfileEditDrawer> = ({ isProfileEdit, setProfileEdit }) => {
+  const { handleSubmit, control } = useForm()
+  const { enqueueSnackbar } = useSnackbar()
+  const updateProfile = async (data: any) => {
+    try {
+      console.log(data)
+    } catch (e) {
+      enqueueSnackbar(e.message, { variant: 'error' })
+    }
+  }
+  return <Drawer
+    anchor="right"
+    open={isProfileEdit}
+    onClose={() => setProfileEdit(false)}
+  >
+    <form onSubmit={handleSubmit(updateProfile)} style={{height: '100vh'}}>
+      <Typography variant="h6" align="center" style={{ padding: "10px" }}>
+        Редактирование профиля
+      </Typography>
+      <Divider />
+      <Grid container style={{ display: 'flex' }}>
+        <Grid item xs={12} style={{ padding: "10px" }}>
+          <Controller
+            name="name"
+            control={control}
+            defaultValue="userName"
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <TextField
+                label="Имя пользователя"
+                variant="outlined"
+                value={value}
+                onChange={onChange}
+                error={!!error}
+                helperText={error ? error.message : null}
+                fullWidth={true}
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} style={{ padding: "10px" }}>
+          <Controller
+            name="email"
+            control={control}
+            defaultValue="eMail"
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <TextField
+                label="E-Mail (логин)"
+                variant="outlined"
+                value={value}
+                onChange={onChange}
+                error={!!error}
+                helperText={error ? error.message : null}
+                fullWidth={true}
+              />
+            )}
+          />
+        </Grid>
+      </Grid>
+      <Divider />
+      <Grid container justifyContent="center">
+        <Grid item style={{ padding: "10px" }}>
+          <Button type="submit" variant="contained" color="primary">
+            Сохранить изменения
+          </Button>
+        </Grid>
+        <Grid item style={{ padding: "10px" }}>
+          <Button variant="contained" color="secondary" onClick={() => setProfileEdit(false)}>
+            Отмена
+          </Button>
+        </Grid>
+      </Grid>
+    </form>
+  </Drawer>
+}
+
+const SLink = styled(Link)`
+  color: white;
+  text-decoration: none
 `
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1,
     },
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
-    title: {
+    kek: {
       flexGrow: 1,
+    },
+    divider: {
+      flexGrow: 25,
     },
   }),
 );
+
 type TNavbar = {
-  logout: () => void
+  logout: () => void,
+  userId: string | null
 }
 const Navbar: React.FC<TNavbar> = ({ logout }) => {
+
   const classes = useStyles();
-  const [isDrawer, setDrawer] = useState(false)
+  const [isProfileEdit, setProfileEdit] = useState(false)
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={() => setDrawer(true)}>
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            EXONDESK
-          </Typography>
+          <Typography className={s.logo}>Exondesk</Typography>
+          <div className={classes.kek}></div>
+          <Button color="inherit"><SLink to='/newtask'>Создать задачу</SLink></Button>
+          <Button color="inherit"><SLink to='/tasks'>Список задач</SLink></Button>
+          <Button color="inherit"><SLink to='/kanban'>Доска</SLink></Button>
+          <div className={classes.divider}></div>
+          <Button color="inherit" onClick={() => setProfileEdit(true)}>UserName</Button>
           <Button color="inherit" onClick={() => logout()}>ВЫХОД</Button>
         </Toolbar>
       </AppBar>
-      <Drawer anchor="left" open={isDrawer} onClose={() => setDrawer(false)}>
-        <NavDrawer>
-          <Typography variant="h6" align="center">
-            Навигация
-          </Typography>
-          <List component='nav'>
-            <NavLinkS to='/kanban' onClick={() => setDrawer(false)}><ListItem button>Доска</ListItem></NavLinkS>
-            <NavLinkS to='/tasks' onClick={() => setDrawer(false)}><ListItem button>Список задач</ListItem></NavLinkS>
-            <NavLinkS to='/newtask' onClick={() => setDrawer(false)}><ListItem button>Создать задачу</ListItem></NavLinkS>
-          </List>
-        </NavDrawer>
-      </Drawer>
+      <ProfileEditDrawer setProfileEdit={setProfileEdit} isProfileEdit={isProfileEdit} />
     </div>
   );
 }

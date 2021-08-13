@@ -27,9 +27,8 @@ const runServer = async () => {
             useCreateIndex: true,
             useNewUrlParser: true,
             useUnifiedTopology: true
-        }, () => {
-            // console.log(`Connected to ${mongoUrl}`)
         })
+        mongoose.set('debug', true)
         mongoose.connection.once('open', () => {console.log(`Connected to ${mongoUrl}`)})
         mongoose.connection.on('error', error => {console.log('Cannot connect to MongoDB')})
         app.listen(process.env.PORT || PORT, () => console.log(`Server is listening port ${PORT}`))

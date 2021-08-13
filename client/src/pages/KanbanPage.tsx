@@ -3,7 +3,6 @@ import Column from '../components/Column';
 import initData from '../legacydata/initData'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { Grid, Paper } from '@material-ui/core';
-import { useApi } from '../hooks/api.hook';
 
 const KanbanPage: React.FC = () => {
     //Логика перемещения элементов
@@ -63,14 +62,6 @@ const KanbanPage: React.FC = () => {
         }
         setState(newState)
     }
-    const { loading, request } = useApi()
-    const onApi = async () => {
-        try {
-          const resData = await request('/api/users/get', 'GET')
-          console.log(resData)
-        } catch (e) {
-          console.log(e.message)
-      }}
 
     return <DragDropContext onDragEnd={onDragEnd}>
         <Paper variant='outlined' style={{padding: '16px', margin: '16px'}}>
@@ -87,7 +78,6 @@ const KanbanPage: React.FC = () => {
                     ><Column column={column} tasks={tasks} users={users} /></Grid>
                 })}
             </Grid>
-            <button onClick={() => onApi()}>oops</button>
         </Paper>
     </DragDropContext>
 }

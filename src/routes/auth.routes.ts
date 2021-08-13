@@ -1,4 +1,4 @@
-import express, {Request, Response} from 'express'
+import express, { Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
 import config from 'config'
 import jwt from 'jsonwebtoken'
@@ -7,7 +7,7 @@ import { userModel } from '../models/user'
 
 const router = express.Router()
 
-type TLoginPayload = {
+type TAuthPayload = {
     email: string,
     password: string
 }
@@ -24,7 +24,7 @@ router.post('/register',
             if (!errors.isEmpty()) {
                 return res.status(400).json({ errors: errors.array(), message: 'Некорректные регистрационные данные' })
             }
-            const { email, password }:TLoginPayload = req.body
+            const { email, password }: TAuthPayload = req.body
             const candidate = await userModel.findOne({ email })
             if (candidate) {
                 return res.status(400).json({ message: 'Такой пользователь уже существует' })
@@ -53,12 +53,11 @@ router.post('/login',
                     errors: errors.array(), message: 'Некорректные авторизационные данные'
                 })
             }
-            const { email, password } = req.body
+            const { email, password }: TAuthPayload = req.body
             const user = await userModel.findOne({ email })
             if (!user) {
                 return res.status(400).json({ message: 'Такой пользователь не существует' })
             }
-            //@ts-ignore
             const isMatch = await bcrypt.compare(password, user.password)
             if (!isMatch) {
                 return res.status(400).json({ message: 'Неверный пароль, попробуйте снова' })
@@ -68,7 +67,7 @@ router.post('/login',
                 config.get('jwtSecret'),
                 { expiresIn: '1h' }
             )
-            res.json({ token, userId: user.id })
+            res.json({ token, userId: user.id, name: user.name })
         } catch (e) {
             res.status(500).json({ message: e.message })
         }

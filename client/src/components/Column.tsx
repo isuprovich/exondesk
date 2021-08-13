@@ -27,7 +27,7 @@ const Column: React.FC<TColumnProps> = ({ column, tasks, users }) => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center'
-            }}>
+        }}>
             <Container>
                 <Typography variant="h6" component="h6" align="center">{column.title}</Typography>
             </Container>
@@ -37,18 +37,16 @@ const Column: React.FC<TColumnProps> = ({ column, tasks, users }) => {
                         {...provided.droppableProps}
                         innerRef={provided.innerRef}
                         $isDraggingOver={snapshot.isDraggingOver}
-                        style={{padding: '5px', borderRadius: '2px'}}
+                        style={{ padding: '5px', borderRadius: '2px' }}
                     >
                         {tasks.map((task, index) => {
                             const executor = users[task.taskExecutor]
                             return (
                                 <Task key={task.id} task={task} index={index} executor={executor} />
                             )
-                        }
-
-                        )}
+                        })}
                         {provided.placeholder}
-                        <Button variant='outlined' style={{display: 'block', margin: '0 auto'}}>+</Button>
+                        <Button variant='outlined' style={{ display: 'block', margin: '0 auto' }}>+</Button>
                     </ColumnContainer>
                 )}
             </Droppable>

@@ -8,24 +8,16 @@ export const useRoutes = (isAuth: boolean) => {
     if (isAuth) {
         return (
             <Switch>
-                <Route path='/kanban'>
-                    <KanbanPage />
-                </Route>
-                <Route path='/tasks'>
-                    <TasksListPage />    
-                </Route>
-                <Route path='/newtask'>
-                    <NewTaskPage />
-                </Route>
+                <Route path='/kanban' render={() => <KanbanPage />} />
+                <Route path='/tasks' render={() => <TasksListPage />} />
+                <Route path='/newtask' render={() => <NewTaskPage />} />
                 <Redirect to='/kanban' />
             </Switch>
         )
     }
     return (
         <Switch>
-            <Route path='/auth' exact>
-                <LoginPage />
-            </Route>
+            <Route path='/auth' exact render={() => <LoginPage />} />
             <Redirect to='/auth' />
         </Switch>
     )

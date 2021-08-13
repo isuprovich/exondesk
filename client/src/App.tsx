@@ -1,10 +1,9 @@
 import React from 'react'
-import { BrowserRouter } from 'react-router-dom'
 import { useRoutes } from './routes'
 import { useAuth } from './hooks/auth.hook'
 import { SnackbarProvider } from 'notistack';
 import { AuthContext } from './context/AuthContext'
-import { CssBaseline, Drawer } from '@material-ui/core'
+import { CssBaseline } from '@material-ui/core'
 import Navbar from './components/Navbar'
 
 const App: React.FC = () => {
@@ -22,10 +21,8 @@ const App: React.FC = () => {
     <SnackbarProvider>
       <AuthContext.Provider value={{ token, login, logout, userId, isAuth }}>
         <CssBaseline />
-        <BrowserRouter>
-          {isAuth && <Navbar logout={logout} />}
+          {isAuth && <Navbar logout={logout} userId={userId} />}
           {routes}
-        </BrowserRouter>
       </AuthContext.Provider>
     </SnackbarProvider>
   </>

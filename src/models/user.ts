@@ -4,14 +4,18 @@ interface IUser {
     email: string
     password: string
     name: string
-    tasks?: Array<number>
+    position: string
+    tasks: Array<Schema.Types.ObjectId>
+    dateOfRegistration: Date
 }
 
 const userSchema = new Schema<IUser>({
     email: { type: String, required: true },
-    password: {type: String, required: true},
-    name: { type: String},
-    tasks: [{ type: Number, ref: 'Task' }]
+    password: { type: String, required: true },
+    name: { type: String },
+    position: { type: String },
+    tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }],
+    dateOfRegistration: { type: Date, default: Date.now }
 })
 
 const userModel = model<IUser>('User', userSchema)
