@@ -6,8 +6,8 @@ export interface ITask {
     description: string,
     side: 'front' | 'back',
     executor: Schema.Types.ObjectId,
-    priority: 'low' | 'normal' | 'high' | 'critical' | 'epic' | 'hotfix',
-    status: 'new' | 'analytics' | 'indev' | 'dev' | 'review' | 'test' | 'intest' | 'backtodev' | 'closed',
+    priority: Schema.Types.ObjectId,
+    status: Schema.Types.ObjectId,
     dateOfCreation: Date,
     dateOfUpdate: Date,
     isDeleted: boolean
@@ -19,8 +19,8 @@ const taskSchema = new Schema<ITask>({
     description: { type: String },
     side: { type: String },
     executor: { type: Schema.Types.ObjectId, ref: 'User' },
-    priority: { type: String },
-    status: { type: String },
+    priority: { type: Schema.Types.ObjectId, ref: 'Priority' },
+    status: { type: Schema.Types.ObjectId, ref: 'Status' },
     dateOfCreation: { type: Date, default: Date.now },
     dateOfUpdate: {type: Date, default: null},
     isDeleted: { type: Boolean, default: false }

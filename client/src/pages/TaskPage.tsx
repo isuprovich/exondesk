@@ -6,7 +6,7 @@ import { useApi } from '../hooks/api.hook'
 import ReactMarkdown from 'react-markdown'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useUsers } from '../hooks/users.hook'
-import { priorities, statuses } from '../legacydata/taskMetadata'
+import { usePriorities, useStatuses } from '../hooks/tags.hook'
 
 type TControl = {
     control: Control<FieldValues>
@@ -41,6 +41,8 @@ const TaskPage: React.FC = () => {
     const { enqueueSnackbar } = useSnackbar()
     const { loading, request } = useApi()
     const { loadingUsers, users } = useUsers()
+    const { loadingStatuses, statuses } = useStatuses()
+    const { loadingPriorities, priorities } = usePriorities()
     const createTask = async (data: any) => {
         try {
             const reqData = await request('/api/tasks/newtask', 'POST', data)
@@ -114,7 +116,7 @@ const TaskPage: React.FC = () => {
                                 {Object.keys(users).map(i => {
                                     const j = Number(i)
                                     return (
-                                        <MenuItem key={i} value={users[j]._id}>{users[j].email}</MenuItem>
+                                        <MenuItem key={i} value={users[j]._id}>{users[j].name === undefined ? users[j].email : users[j].name}</MenuItem>
                                     )
                                 })}
                             </TextField>
@@ -125,7 +127,7 @@ const TaskPage: React.FC = () => {
                     <Controller
                         name="priority"
                         control={control}
-                        defaultValue="normal"
+                        defaultValue=""
                         render={({ field: { onChange, value }, fieldState: { error } }) => (
                             <TextField
                                 label="Приоритет"
@@ -135,10 +137,14 @@ const TaskPage: React.FC = () => {
                                 error={!!error}
                                 helperText={error ? error.message : null}
                                 fullWidth={true}
+                                disabled={loadingPriorities}
                                 select
                             >
-                                {priorities.map(i => {
-                                    return <MenuItem key={i.value} value={i.value}>{i.label}</MenuItem>
+                                {Object.keys(priorities).map(i => {
+                                    const j = Number(i)
+                                    return (
+                                        <MenuItem key={i} value={priorities[j]._id}>{priorities[j].label}</MenuItem>
+                                    )
                                 })}
                             </TextField>
                         )}
@@ -148,7 +154,7 @@ const TaskPage: React.FC = () => {
                     <Controller
                         name="status"
                         control={control}
-                        defaultValue="new"
+                        defaultValue=""
                         render={({ field: { onChange, value }, fieldState: { error } }) => (
                             <TextField
                                 label="Статус"
@@ -158,10 +164,14 @@ const TaskPage: React.FC = () => {
                                 error={!!error}
                                 helperText={error ? error.message : null}
                                 fullWidth={true}
+                                disabled={loadingStatuses}
                                 select
                             >
-                                {statuses.map(i => {
-                                    return <MenuItem key={i.value} value={i.value}>{i.label}</MenuItem>
+                                {Object.keys(statuses).map(i => {
+                                    const j = Number(i)
+                                    return (
+                                        <MenuItem key={i} value={statuses[j]._id}>{statuses[j].label}</MenuItem>
+                                    )
                                 })}
                             </TextField>
                         )}

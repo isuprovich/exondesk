@@ -13,6 +13,7 @@ app.use('/api/auth', require('./src/routes/auth.routes'))
 app.use('/api/users', require('./src/routes/users.routes'))
 app.use('/api/tasks', require('./src/routes/tasks.routes'))
 app.use('/api/kanban', require('./src/routes/kanban.routes'))
+app.use('/api/tags', require('./src/routes/tags.routes'))
 
 if (process.env.NODE_ENV === 'production') {
     app.use('/', express.static(path.join(__dirname, 'client', 'build')))

@@ -17,8 +17,12 @@ border-left: 8px solid ${props =>
                     props.$priority === 'hotfix' ? '#880e4f' :
                         props.$priority === 'epic' ? '#e91e63' : '#9e9e9e'};
 `
-const CustomChip = styled(Chip)`
-        margin-right: 8px
+type TChipStyleProps = {
+    $color?: string
+}
+const CustomChip = styled(Chip) <TChipStyleProps>`
+    margin-right: 8px;
+    background-color: ${props => props.$color}
 `
 
 const TasksListPage: React.FC = () => {
@@ -27,7 +31,16 @@ const TasksListPage: React.FC = () => {
     
     // Получение списка задач
     const [tasks, setTasks] = useState([
-        { "_id": "", "number": "", "taskname": "", "side": "", "executor": { "email": "", "name": "" }, "priority": "", "status": "", "description": "", "dateOfCreation": "", "dateOfUpdate": "" }
+        { "_id": "",
+        "number": "",
+        "taskname": "",
+        "side": "",
+        "executor": { "email": "", "name": "" },
+        "priority": {"_id": "", "value": "", "label": "", "color": ""},
+        "status": {"_id": "", "value": "", "label": "", "color": ""},
+        "description": "",
+        "dateOfCreation": "",
+        "dateOfUpdate": "" }
     ])
     const getTasks = useCallback(async () => {
         try {
@@ -78,7 +91,7 @@ const TasksListPage: React.FC = () => {
                 key={i}
                 variant='outlined'
                 style={{ padding: '8px 16px', margin: '8px' }}
-                $priority={tasks[j].priority}
+                $priority={tasks[j].priority.value}
             >
                 <Grid container alignItems="stretch">
                     <Grid item container xs={12} sm={12} alignItems="stretch">
@@ -102,12 +115,12 @@ const TasksListPage: React.FC = () => {
                     <Grid item xs={12} sm={12} container>
                         <Grid item xs={8} sm={8}>
                             <CustomChip
-                                label={tasks[j].priority}
-                                
+                                label={tasks[j].priority.label}
                                 onClick={handleClick}
+                                $color={tasks[j].priority.color}
                             />
                             <CustomChip
-                                label={tasks[j].status}
+                                label={tasks[j].status.label}
                                 onClick={handleClick}
                             />
                             <CustomChip

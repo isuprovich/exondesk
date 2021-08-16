@@ -6,7 +6,7 @@ export const useUsers = () => {
     const { enqueueSnackbar } = useSnackbar()
     const { loading, request } = useApi()
     const loadingUsers = loading
-    const [users, setUsers] = useState([{ "tasks": [], "_id": "Не выбран", "email": "Не выбран" }])
+    const [users, setUsers] = useState([{ "tasks": [], "_id": "", "email": "", "name": "" }])
     const getUsers = useCallback(async () => {
         try {
             const reqData = await request('/api/users/get', 'GET')

@@ -29,6 +29,8 @@ router.get('/gettasks', [], async (req: Request, res: Response) => {
         await taskModel
             .find({ isDeleted: false }, { __v: 0 })
             .populate('executor', ['email', 'name'])
+            .populate('status', ['value', 'label', 'name', 'color'])
+            .populate('priority', ['value', 'label', 'name', 'color'])
             .exec((error, tasks) => {
                 if (error) return res.status(500).json({ message: error })
                 return res.json({ tasks: tasks })
