@@ -36,7 +36,7 @@ const PreviewComponent: React.FC<TControl> = ({ control }) => {
     </>
 }
 
-const NewTaskPage: React.FC = () => {
+const TaskPage: React.FC = () => {
     const { handleSubmit, control } = useForm()
     const { enqueueSnackbar } = useSnackbar()
     const { loading, request } = useApi()
@@ -109,6 +109,7 @@ const NewTaskPage: React.FC = () => {
                                 fullWidth={true}
                                 disabled={loadingUsers}
                                 select
+                                required={true}
                             >
                                 {Object.keys(users).map(i => {
                                     const j = Number(i)
@@ -205,4 +206,4 @@ const NewTaskPage: React.FC = () => {
     </Paper>
 }
 
-export default NewTaskPage
+export default TaskPage

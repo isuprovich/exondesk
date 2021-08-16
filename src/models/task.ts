@@ -8,7 +8,9 @@ export interface ITask {
     executor: Schema.Types.ObjectId,
     priority: 'low' | 'normal' | 'high' | 'critical' | 'epic' | 'hotfix',
     status: 'new' | 'analytics' | 'indev' | 'dev' | 'review' | 'test' | 'intest' | 'backtodev' | 'closed',
-    dateOfCreation: Date
+    dateOfCreation: Date,
+    dateOfUpdate: Date,
+    isDeleted: boolean
 }
 
 const taskSchema = new Schema<ITask>({
@@ -19,7 +21,9 @@ const taskSchema = new Schema<ITask>({
     executor: { type: Schema.Types.ObjectId, ref: 'User' },
     priority: { type: String },
     status: { type: String },
-    dateOfCreation: { type: Date, default: Date.now }
+    dateOfCreation: { type: Date, default: Date.now },
+    dateOfUpdate: {type: Date, default: null},
+    isDeleted: { type: Boolean, default: false }
 })
 
 const taskModel = model<ITask>('Task', taskSchema)

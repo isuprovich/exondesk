@@ -2,13 +2,10 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import { Divider, Drawer, Grid, TextField } from '@material-ui/core';
-import styled from 'styled-components';
+import { Divider, Drawer, Grid, TextField, AppBar, Toolbar, Typography, Button, ButtonGroup } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
+import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded';
+import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRounded';
 import s from '../fonts/logo.module.css'
 
 type TProfileEditDrawer = {
@@ -31,7 +28,7 @@ const ProfileEditDrawer: React.FC<TProfileEditDrawer> = ({ isProfileEdit, setPro
     open={isProfileEdit}
     onClose={() => setProfileEdit(false)}
   >
-    <form onSubmit={handleSubmit(updateProfile)} style={{height: '100vh'}}>
+    <form onSubmit={handleSubmit(updateProfile)} style={{ height: '100vh' }}>
       <Typography variant="h6" align="center" style={{ padding: "10px" }}>
         Редактирование профиля
       </Typography>
@@ -91,10 +88,6 @@ const ProfileEditDrawer: React.FC<TProfileEditDrawer> = ({ isProfileEdit, setPro
   </Drawer>
 }
 
-const SLink = styled(Link)`
-  color: white;
-  text-decoration: none
-`
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -124,12 +117,17 @@ const Navbar: React.FC<TNavbar> = ({ logout }) => {
         <Toolbar>
           <Typography className={s.logo}>Exondesk</Typography>
           <div className={classes.kek}></div>
-          <Button color="inherit"><SLink to='/newtask'>Создать задачу</SLink></Button>
-          <Button color="inherit"><SLink to='/tasks'>Список задач</SLink></Button>
-          <Button color="inherit"><SLink to='/kanban'>Доска</SLink></Button>
+          <ButtonGroup size="small" color="primary" variant="text">
+            <Button component={Link} to='/settings' color="inherit"><SettingsRoundedIcon /></Button>
+            <Button component={Link} to='/newtask' color="inherit"><AddCircleOutlineRoundedIcon /></Button>
+            <Button component={Link} to='/tasks' color="inherit">Список задач</Button>
+            <Button component={Link} to='/kanban' color="inherit">Доска</Button>
+          </ButtonGroup>
           <div className={classes.divider}></div>
-          <Button color="inherit" onClick={() => setProfileEdit(true)}>UserName</Button>
-          <Button color="inherit" onClick={() => logout()}>ВЫХОД</Button>
+          <ButtonGroup size="small" color="primary" variant="text">
+            <Button color="inherit" onClick={() => setProfileEdit(true)}>UserName</Button>
+            <Button color="inherit" onClick={() => logout()}>ВЫХОД</Button>
+          </ButtonGroup>
         </Toolbar>
       </AppBar>
       <ProfileEditDrawer setProfileEdit={setProfileEdit} isProfileEdit={isProfileEdit} />

@@ -2,7 +2,8 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 import KanbanPage from './pages/KanbanPage'
 import LoginPage from './pages/AuthPages'
 import TasksListPage from './pages/TasksListPage'
-import NewTaskPage from './pages/NewTaskPage'
+import TaskPage from './pages/TaskPage'
+import SettingsPage from './pages/SettingsPage'
 
 export const useRoutes = (isAuth: boolean) => {
     if (isAuth) {
@@ -10,8 +11,9 @@ export const useRoutes = (isAuth: boolean) => {
             <Switch>
                 <Route path='/kanban' render={() => <KanbanPage />} />
                 <Route path='/tasks' render={() => <TasksListPage />} />
-                <Route path='/newtask' render={() => <NewTaskPage />} />
-                <Redirect to='/kanban' />
+                <Route path='/newtask' render={() => <TaskPage />} />
+                <Route path='/settings' render={() => <SettingsPage />} />
+                <Redirect to='/tasks' />
             </Switch>
         )
     }

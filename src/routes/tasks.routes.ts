@@ -27,12 +27,12 @@ router.post('/newtask', [],
 router.get('/gettasks', [], async (req: Request, res: Response) => {
     try {
         await taskModel
-        .find({}, { __v: 0 })
-        .populate('executor', ['email', 'name'])
-        .exec((error, tasks) => {
-            if (error) return res.status(500).json({ message: error })
-            return res.json({ tasks: tasks })
-        })
+            .find({ isDeleted: false }, { __v: 0 })
+            .populate('executor', ['email', 'name'])
+            .exec((error, tasks) => {
+                if (error) return res.status(500).json({ message: error })
+                return res.json({ tasks: tasks })
+            })
     } catch (e) {
         res.status(500).json({ message: e })
     }
@@ -51,7 +51,24 @@ router.get('/:id', async (req: Request, res: Response) => {
                 return res.json({ task: task })
             })
     } catch (e) {
-        res.status(500).json({ message: e })
+        res.status(500).json({ message: `Ошибка при получении задачи: ${e}` })
+    }
+})
+router.delete('/:id', async (req: Request, res: Response) => {
+    try {
+        const tasknumber = Number(req.params.id)
+        await taskModel
+            .findOne({ number: tasknumber })
+            .updateOne({ isDeleted: false }, {
+                $set: { isDeleted: true },
+                $currentDate: { dateOfUpdate: true }
+            })
+            .exec((error, result) => {
+                if (error) return res.status(500).json({ message: error })
+                return res.json({ result: result })
+            })
+    } catch (e) {
+        res.status(500).json({ message: `Ошибка при удалении задачи: ${e}` })
     }
 })
 
