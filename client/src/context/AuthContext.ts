@@ -4,7 +4,7 @@ function noop() {}
 
 type TAuthContext = {
     token: string | null
-    userId: string | null
+    userId: string
     login: (token: string, userId: string) => void
     logout: () => void
     isAuth: boolean
@@ -12,7 +12,7 @@ type TAuthContext = {
 
 export const AuthContext = createContext<TAuthContext>({
     token: null,
-    userId: null,
+    userId: "",
     login: noop,
     logout: noop,
     isAuth: false

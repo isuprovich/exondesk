@@ -25,4 +25,17 @@ router.get('/:id', async (req: Request, res: Response) => {
     }
 })
 
+router.post('/:id', async (req: Request, res: Response) => {
+    try {
+        await userModel
+            .updateOne({ _id: req.params.id }, {'email': req.body.email, 'name': req.body.name})
+            .exec((error, user) => {
+                if (error) return res.status(500).json({ message: error })
+                return res.json({ user: user })
+            })
+    } catch (e) {
+        res.status(500).json({ message: e })
+    }
+})
+
 module.exports = router

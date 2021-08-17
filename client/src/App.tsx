@@ -21,7 +21,7 @@ const App: React.FC = () => {
     <SnackbarProvider>
       <AuthContext.Provider value={{ token, login, logout, userId, isAuth }}>
         <CssBaseline />
-          {isAuth && <Navbar logout={logout} userId={userId} />}
+          {userId !== "" && <Navbar logout={logout} userId={userId} />}
           {routes}
       </AuthContext.Provider>
     </SnackbarProvider>
