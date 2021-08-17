@@ -6,7 +6,7 @@
   "author": "Ivan Suprovich",
   "license": "MIT",
   "scripts": {
-    "start": "node build/app.js",
+    "start": "concurrently \"node build/app.js\" \"node build/client/index.js\"",
     "build": "tsc",
     "server": "nodemon app.ts",
     "client": "yarn --cwd client start",
@@ -25,7 +25,6 @@
     "@types/mongoose": "^5.11.97",
     "@types/redux": "^3.6.0",
     "@types/redux-thunk": "^2.1.0",
-    "concurrently": "^6.2.0",
     "cross-env": "^7.0.3",
     "nodemon": "^2.0.12",
     "ts-node-dev": "^1.1.8",
@@ -42,6 +41,7 @@
     "path": "^0.12.7",
     "react-markdown": "^6.0.3",
     "redux": "^4.1.1",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "concurrently": "^6.2.0"
   }
 }
