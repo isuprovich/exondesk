@@ -6,11 +6,13 @@
   "author": "Ivan Suprovich",
   "license": "MIT",
   "scripts": {
+    "start": "cross-env NODE_ENV=production node app.js",
     "server": "nodemon app.ts",
     "client": "yarn --cwd client start",
     "client:install": "yarn --cwd client install",
     "client:build": "yarn --cwd client build",
-    "dev": "cross-env NODE_ENV=development concurrently \"yarn server\" \"yarn client\""
+    "dev": "cross-env NODE_ENV=development concurrently \"yarn server\" \"yarn client\"",
+    "heroku-postbuild": "yarn client:install && yarn client:build"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
