@@ -18,7 +18,7 @@ app.use('/api/tags', require('./src/routes/tags.routes'))
 if (process.env.NODE_ENV === 'production') {
     app.use('/', express.static(path.join(__dirname, 'client')))
     app.get('*', (req: Request, res: Response) => {
-        res.sendFile(path.resolve(__dirname, 'client', 'index.html'))
+        res.sendFile(path.resolve(__dirname, 'client', 'index.js'))
     })
 }
 
