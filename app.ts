@@ -16,9 +16,9 @@ app.use('/api/kanban', require('./src/routes/kanban.routes'))
 app.use('/api/tags', require('./src/routes/tags.routes'))
 
 if (process.env.NODE_ENV === 'production') {
-    app.use('/', express.static(path.join(__dirname, 'client')))
+    app.use('/', express.static(path.join(__dirname, 'client', 'public')))
     app.get('*', (req: Request, res: Response) => {
-        res.sendFile(path.resolve(__dirname, 'client', 'index.js'))
+        res.sendFile(path.resolve(__dirname, 'client', 'public','index.html'))
     })
 }
 

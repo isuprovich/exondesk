@@ -6,7 +6,7 @@
   "author": "Ivan Suprovich",
   "license": "MIT",
   "scripts": {
-    "start": "concurrently \"node build/app.js\" \"node build/client/index.js\"",
+    "start": "node build/app.js",
     "build": "tsc",
     "server": "nodemon app.ts",
     "client": "yarn --cwd client start",
