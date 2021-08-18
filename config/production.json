@@ -1,5 +1,5 @@
 {
     "port": "5000",
-    "mongoUrl": "mongodb+srv://isuprovich:692120uLiQuiD@exondesk.yfpy6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+    "mongoUrl": "mongodb+srv://isuprovich:692120uLiQuiD@exondesk.yfpy6.mongodb.net/exondesk?retryWrites=true&w=majority",
     "jwtSecret": "EXON"
 }
