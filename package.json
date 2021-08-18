@@ -13,7 +13,7 @@
     "client:install": "yarn --cwd client install",
     "client:build": "yarn --cwd client build",
     "dev": "cross-env NODE_ENV=development concurrently \"yarn server\" \"yarn client\"",
-    "heroku-postbuild": "yarn client:install && yarn build"
+    "heroku-postbuild": "yarn client:build && yarn build"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
