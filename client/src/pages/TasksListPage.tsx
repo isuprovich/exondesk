@@ -1,33 +1,18 @@
-import { Avatar, Button, ButtonGroup, Chip, Grid, Paper, Typography, Dialog, DialogTitle, DialogActions, LinearProgress } from '@material-ui/core'
+import { Avatar, Button, ButtonGroup, Grid, Paper, Typography, Dialog, DialogTitle, DialogActions, LinearProgress } from '@material-ui/core'
 import { useState, useCallback, useEffect } from 'react'
 import { useSnackbar } from 'notistack'
 import { useApi } from '../hooks/api.hook'
 import styled from 'styled-components'
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined'
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined'
+import { CustomChip } from '../components/StyledComponents/CustomChip'
 
-type TChipStyleProps = {
+export type TChipStyleProps = {
     $color?: string
 }
 const CardPaper = styled(Paper) <TChipStyleProps>`
     border-left: 8px solid ${props => props.$color};
 `
-const CustomChip = styled(Chip) <TChipStyleProps>`
-    margin-right: 8px;
-    border-radius: 5px;
-    color: white;
-    background-color: ${props => props.$color === undefined ? "grey" : props.$color};
-    transition: opacity .3s ease;
-    &:hover {
-        opacity: 70%;
-        background-color: ${props => props.$color === undefined ? "black" : props.$color};
-    };
-    &:focus {
-        opacity: 70%;
-        background-color: ${props => props.$color === undefined ? "black" : props.$color};
-    }
-`
-
 const TasksListPage: React.FC = () => {
     const { enqueueSnackbar } = useSnackbar()
     const { loading, request } = useApi()

@@ -18,5 +18,11 @@ export const tagsAPI = {
     },
     getStatuses() {
         return api.get<TStatuses>('/tags/statuses').then(res => res.data)
+    },
+    newPriority(data: TTag) {
+        return api.post('/tags/newpriority', data)
+    },
+    newStatus(data: TTag) {
+        return api.post('/tags/newstatus', data)
     }
 }

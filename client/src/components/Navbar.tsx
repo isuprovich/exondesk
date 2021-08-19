@@ -4,7 +4,7 @@ import { AppBar, Toolbar, Typography, Button, ButtonGroup } from '@material-ui/c
 import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded'
 import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRounded'
 import { ProfileEditDrawer } from './ProfileEditDrawer'
-import { SettingsEditDrawer } from './SettingsEditDrawer'
+import { SettingsEditDrawer } from './SettingsDrawer/SettingsEditDrawer'
 import s from '../fonts/logo.module.css'
 import { TNewUserData, TUser, usersAPI } from '../api/users.api'
 import { useSnackbar } from "notistack"
