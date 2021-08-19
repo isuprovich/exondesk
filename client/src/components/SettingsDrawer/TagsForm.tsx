@@ -1,70 +1,77 @@
 import React, { useState, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Grid, TextField, Button, Typography, ButtonGroup } from '@material-ui/core';
-import { tagsAPI, TTag } from '../../api/tags.api';
+import { TTag, TTagInner } from '../../api/tags.api';
 import { CustomChip } from '../StyledComponents/CustomChip';
+import { AxiosResponse } from 'axios';
 
-type TTagInner = {
-    value: string;
-    label: string;
-    color: string;
+type TTagsForm = {
+    getTags: () => Promise<TTag>,
+    newTag: (data: TTagInner) => Promise<AxiosResponse<any>>,
+    deleteTag: (value: string) => Promise<AxiosResponse<any>>,
+    tagsLabel: string
 }
-export const PrioritiesForm: React.FC = () => {
+export const TagsForm: React.FC<TTagsForm> = ({getTags, newTag, deleteTag, tagsLabel}) => {
     const { handleSubmit, control, reset } = useForm();
-    const [newPriorityToggle, setNewPriorityToggle] = useState(false);
-    const [priorities, setPriorities] = useState<TTag | null>(null);
+    const [newTagToggle, setNewTagToggle] = useState(false);
+    const [tags, setTags] = useState<TTag | null>(null);
+    const [tagToDelete, setTagToDelete] = useState<string | null>(null)
     useEffect(() => {
-        if (!newPriorityToggle) {
-            tagsAPI.getPriorities().then(res => {
-                setPriorities(res.priorities)
+        if (!newTagToggle) {
+            getTags().then(res => {
+                setTags(res)
             })
         }
-    }, [newPriorityToggle]);
+    }, [newTagToggle, getTags, tagToDelete]);
     const [disableSubmit, setDisableSubmit] = useState(false)
-    const savePriority = (data: TTag) => {
+    const saveTag = (data: TTagInner) => {
         setDisableSubmit(true)
-        tagsAPI.newPriority(data).then(res => {
+        newTag(data).then(res => {
             setDisableSubmit(false)
-            setNewPriorityToggle(false)
+            setNewTagToggle(false)
             reset()
         })
     }
-    const deletePriority = () => {
-        console.log('Delete')
-    }
+    useEffect(() => {
+        if(tagToDelete) {
+            deleteTag(tagToDelete).then(res => {
+                setTagToDelete(null)
+            })
+        }
+    }, [tagToDelete, deleteTag])
 
-    return <form onSubmit={handleSubmit(savePriority)}>
+    return <form onSubmit={handleSubmit(saveTag)}>
         <Grid container direction="column" spacing={2} style={{ padding: '16px' }}>
             <Grid item xs={12}>
-                <Typography align="center" variant="subtitle2">Приоритеты</Typography>
+                <Typography align="center" variant="subtitle2">{tagsLabel}</Typography>
             </Grid>
             <Grid item xs={12}>
-                {priorities?.map(priority => {
-                    return <div key={priority.value} style={{marginBottom: "8px"}}>
+                {tags?.map(tag => {
+                    return <div key={tag.value} style={{marginBottom: "8px"}}>
                         <CustomChip
-                            label={`${priority.label} (${priority.value})`}
-                            $color={priority.color}
+                            label={`${tag.label} (${tag.value})`}
+                            $color={tag.color}
                             style={{ width: "100%" }}
                             onClick={() => {console.log('Clicked')}}
-                            onDelete={deletePriority}
+                            onDelete={() => setTagToDelete(tag.value)}
                         />
                     </div>
                 })}
             </Grid>
             <Grid container justifyContent="center">
-                {!newPriorityToggle
+                {!newTagToggle
                     ? <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => setNewPriorityToggle(true)}
+                        onClick={() => setNewTagToggle(true)}
                         size="small"
                     >
                         +
                     </Button>
-                    : <Typography align="center" variant="subtitle2">Создание приоритета</Typography>
+                    : <Typography align="center" variant="subtitle2">Создание тега</Typography>
                 }
             </Grid>
-            {newPriorityToggle && <>
+            {newTagToggle && <>
                 <Grid item xs={12}>
                     <Controller
                         name="value"
@@ -72,7 +79,7 @@ export const PrioritiesForm: React.FC = () => {
                         defaultValue={""}
                         render={({ field: { onChange, value }, fieldState: { error } }) => (
                             <TextField
-                                label="Значение приоритета"
+                                label="Значение"
                                 variant="outlined"
                                 size="small"
                                 value={value}
@@ -89,7 +96,7 @@ export const PrioritiesForm: React.FC = () => {
                         defaultValue={""}
                         render={({ field: { onChange, value }, fieldState: { error } }) => (
                             <TextField
-                                label="Наименование приоритета"
+                                label="Наименование"
                                 variant="outlined"
                                 size="small"
                                 value={value}
@@ -106,7 +113,7 @@ export const PrioritiesForm: React.FC = () => {
                         defaultValue={""}
                         render={({ field: { onChange, value }, fieldState: { error } }) => (
                             <TextField
-                                label="Цвет приоритета"
+                                label="Цвет"
                                 variant="outlined"
                                 size="small"
                                 value={value}
@@ -131,7 +138,7 @@ export const PrioritiesForm: React.FC = () => {
                             color="secondary"
                             size="small"
                             onClick={() => {
-                                setNewPriorityToggle(false)
+                                setNewTagToggle(false)
                                 reset()
                             }}
                         >

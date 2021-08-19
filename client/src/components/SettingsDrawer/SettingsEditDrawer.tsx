@@ -1,7 +1,7 @@
 import React from 'react';
 import { Divider, Drawer, Grid, Typography, Button } from '@material-ui/core';
-import { PrioritiesForm } from './PrioritiesForm';
-import { StatusesForm } from './StatusesForm';
+import { TagsForm } from './TagsForm';
+import { tagsAPI } from '../../api/tags.api';
 
 type TSettingsEditDrawer = {
   isSettingsEdit: boolean
@@ -14,18 +14,19 @@ export const SettingsEditDrawer: React.FC<TSettingsEditDrawer> = ({ isSettingsEd
     onClose={() => setSettingsEdit(false)}
   >
     <div style={{
-      overflow: "hidden",
+      overflowX: "hidden",
       height: '100%'
     }}>
-      <div style={{ display: 'flex', height: '100%', flexDirection: 'column', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex', height: '99%', flexDirection: 'column', justifyContent: 'space-between' }}>
         <div>
           <Typography variant="h6" align="center" style={{ padding: "10px" }}>
             Редактирование тэгов
           </Typography>
           <Divider />
-          <PrioritiesForm />
+          <TagsForm getTags={tagsAPI.getPriorities} newTag={tagsAPI.newPriority} deleteTag={tagsAPI.deletePriority} tagsLabel="Приоритеты" />
           <Divider />
-          <StatusesForm />
+          <TagsForm getTags={tagsAPI.getStatuses} newTag={tagsAPI.newStatus} deleteTag={tagsAPI.deleteStatus} tagsLabel="Статусы" />
+          
         </div>
         <div>
           <Divider />
