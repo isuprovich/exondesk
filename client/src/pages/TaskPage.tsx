@@ -1,12 +1,13 @@
 import { Button, Grid, MenuItem, Paper, TextField, Accordion, AccordionDetails, AccordionSummary, ButtonGroup } from '@material-ui/core'
 import { useSnackbar } from 'notistack'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useForm, Controller, useWatch, Control, FieldValues } from 'react-hook-form'
 import { useApi } from '../hooks/api.hook'
 import ReactMarkdown from 'react-markdown'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { useUsers } from '../hooks/users.hook'
-import { usePriorities, useStatuses } from '../hooks/tags.hook'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import { TUserArray, usersAPI } from '../api/users.api'
+import { tagsAPI, TTag } from '../api/tags.api'
+import { tasksAPI, TNewTask } from '../api/tasks.api'
 
 type TControl = {
     control: Control<FieldValues>
@@ -38,20 +39,39 @@ const TaskPage: React.FC = () => {
     const { handleSubmit, control } = useForm()
     const { enqueueSnackbar } = useSnackbar()
     const { loading, request } = useApi()
-    const { loadingUsers, users } = useUsers()
-    const { loadingStatuses, statuses } = useStatuses()
-    const { loadingPriorities, priorities } = usePriorities()
-    const createTask = async (data: any) => {
-        try {
-            const reqData = await request('/api/tasks/newtask', 'POST', data)
-            enqueueSnackbar(reqData.message, { variant: 'success' })
-        } catch (e) {
-            enqueueSnackbar(e.message, { variant: 'error' })
-        }
+
+    //Getting data for selectors
+    const [users, setUsers] = useState<TUserArray | null>(null)
+    const [statuses, setStatuses] = useState<TTag | null>(null)
+    const [priorities, setPriorities] = useState<TTag | null>(null)
+    useEffect(() => {
+        usersAPI.getAllUsers().then(res => {
+            setUsers(res)
+        })
+    }, [])
+    useEffect(() => {
+        tagsAPI.getPriorities().then(res => {
+            setPriorities(res)
+        })
+    }, [])
+    useEffect(() => {
+        tagsAPI.getStatuses().then(res => {
+            setStatuses(res)
+        })
+    }, [])
+
+    //New task
+    const createTask = (data: TNewTask) => {
+        tasksAPI.newTask(data).then(res => {
+            enqueueSnackbar('Задача успешно создана', { variant: 'success' })
+        }, res => {
+            enqueueSnackbar('Ошибка при создании задачи', { variant: 'error' })
+        })
     }
+
     return <form onSubmit={handleSubmit(createTask)}>
         <Grid container>
-            <Grid item style={{flexGrow: 1}}>
+            <Grid item style={{ flexGrow: 1 }}>
                 <Paper
                     variant='outlined'
                     style={{
@@ -121,11 +141,11 @@ const TaskPage: React.FC = () => {
                                 </Button>
                             </ButtonGroup>
                         </Grid>
-                        <Grid item>
+                        {!!priorities && <Grid item>
                             <Controller
                                 name="priority"
                                 control={control}
-                                defaultValue=""
+                                defaultValue={''}
                                 render={({ field: { onChange, value }, fieldState: { error } }) => (
                                     <TextField
                                         label="Приоритет"
@@ -135,25 +155,23 @@ const TaskPage: React.FC = () => {
                                         error={!!error}
                                         helperText={error ? error.message : null}
                                         fullWidth={true}
-                                        disabled={loadingPriorities}
                                         size="small"
                                         select
                                     >
-                                        {Object.keys(priorities).map(i => {
-                                            const j = Number(i)
+                                        {priorities.map((value, i) => {
                                             return (
-                                                <MenuItem key={i} value={priorities[j]._id}>{priorities[j].label}</MenuItem>
+                                                <MenuItem key={i} value={priorities[i]._id}>{priorities[i].label}</MenuItem>
                                             )
                                         })}
                                     </TextField>
                                 )}
                             />
-                        </Grid>
-                        <Grid item>
+                        </Grid>}
+                        {!!statuses && <Grid item>
                             <Controller
                                 name="status"
                                 control={control}
-                                defaultValue=""
+                                defaultValue={''}
                                 render={({ field: { onChange, value }, fieldState: { error } }) => (
                                     <TextField
                                         label="Статус"
@@ -163,25 +181,23 @@ const TaskPage: React.FC = () => {
                                         error={!!error}
                                         helperText={error ? error.message : null}
                                         fullWidth={true}
-                                        disabled={loadingStatuses}
                                         size="small"
                                         select
                                     >
-                                        {Object.keys(statuses).map(i => {
-                                            const j = Number(i)
+                                        {statuses.map((value, i) => {
                                             return (
-                                                <MenuItem key={i} value={statuses[j]._id}>{statuses[j].label}</MenuItem>
+                                                <MenuItem key={i} value={statuses[i]._id}>{statuses[i].label}</MenuItem>
                                             )
                                         })}
                                     </TextField>
                                 )}
                             />
-                        </Grid>
+                        </Grid>}
                         <Grid item>
                             <Controller
                                 name="side"
                                 control={control}
-                                defaultValue=""
+                                defaultValue={''}
                                 render={({ field: { onChange, value }, fieldState: { error } }) => (
                                     <TextField
                                         label="Подсистема"
@@ -200,11 +216,11 @@ const TaskPage: React.FC = () => {
                                 )}
                             />
                         </Grid>
-                        <Grid item>
+                        {!!users && <Grid item>
                             <Controller
                                 name="executor"
                                 control={control}
-                                defaultValue=""
+                                defaultValue={''}
                                 render={({ field: { onChange, value }, fieldState: { error } }) => (
                                     <TextField
                                         label="Исполнитель"
@@ -214,20 +230,18 @@ const TaskPage: React.FC = () => {
                                         error={!!error}
                                         helperText={error ? error.message : null}
                                         fullWidth={true}
-                                        disabled={loadingUsers}
                                         select
                                         size="small"
                                     >
-                                        {Object.keys(users).map(i => {
-                                            const j = Number(i)
+                                        {users.map((value, i) => {
                                             return (
-                                                <MenuItem key={i} value={users[j]._id}>{users[j].name === undefined ? users[j].email : users[j].name}</MenuItem>
+                                                <MenuItem key={i} value={users[i]._id}>{users[i].name === undefined ? users[i].email : users[i].name}</MenuItem>
                                             )
                                         })}
                                     </TextField>
                                 )}
                             />
-                        </Grid>
+                        </Grid>}
                     </Grid>
                 </Paper>
             </Grid>

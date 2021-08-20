@@ -1,9 +1,10 @@
 import { api } from './api'
 
 export type TTagInner = {
-    value: string;
-    label: string;
-    color: string;
+    _id: string
+    value: string
+    label: string
+    color: string
 }
 export type TTag = [TTagInner]
 type TPriorities = {

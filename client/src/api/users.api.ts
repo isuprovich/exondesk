@@ -9,12 +9,18 @@ export type TUser = {
     email: string
     name: string
 }
+export type TUserArray = [TUser]
+export type TUsers = {users: TUserArray}
 export type TNewUserData = {
     name: string
     email: string
 }
 
 export const usersAPI = {
+    getAllUsers() {
+        return api.get<TUsers>('users/get')
+        .then(res => res.data).then(res => {return res.users})
+    },
     getUser(userId: string) {
         return api.get<TUserUser>(`users/${userId}`).then(res => res.data)
     },
