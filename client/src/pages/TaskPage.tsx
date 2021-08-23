@@ -1,13 +1,15 @@
 import { Button, Grid, MenuItem, Paper, TextField, Accordion, AccordionDetails, AccordionSummary, ButtonGroup } from '@material-ui/core'
 import { useSnackbar } from 'notistack'
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useForm, Controller, useWatch, Control, FieldValues } from 'react-hook-form'
-import { useApi } from '../hooks/api.hook'
 import ReactMarkdown from 'react-markdown'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import { TUserArray, usersAPI } from '../api/users.api'
-import { tagsAPI, TTag } from '../api/tags.api'
 import { tasksAPI, TNewTask } from '../api/tasks.api'
+import { useSelector, useDispatch } from 'react-redux'
+import { isLoadingUsers, setUsers } from '../redux/selectors/users.selector'
+import { setStatuses, setPriorities, isLoadingPriorities, isLoadingStatuses, setSides } from '../redux/selectors/tags.selector'
+import { getUsers } from '../redux/reducers/users.reducer'
+import { getPriorities, getStatuses } from '../redux/reducers/tags.reducer'
 
 type TControl = {
     control: Control<FieldValues>
@@ -38,27 +40,23 @@ const PreviewComponent: React.FC<TControl> = ({ control }) => {
 const TaskPage: React.FC = () => {
     const { handleSubmit, control } = useForm()
     const { enqueueSnackbar } = useSnackbar()
-    const { loading, request } = useApi()
+    const dispatch = useDispatch()
 
-    //Getting data for selectors
-    const [users, setUsers] = useState<TUserArray | null>(null)
-    const [statuses, setStatuses] = useState<TTag | null>(null)
-    const [priorities, setPriorities] = useState<TTag | null>(null)
-    useEffect(() => {
-        usersAPI.getAllUsers().then(res => {
-            setUsers(res)
-        })
-    }, [])
-    useEffect(() => {
-        tagsAPI.getPriorities().then(res => {
-            setPriorities(res)
-        })
-    }, [])
-    useEffect(() => {
-        tagsAPI.getStatuses().then(res => {
-            setStatuses(res)
-        })
-    }, [])
+    //GETTING DATA FOR SELECTORS
+
+    const users = useSelector(setUsers)
+    const isLoadUsers = useSelector(isLoadingUsers)
+    useEffect(() => { dispatch(getUsers()) }, [dispatch])
+
+    const statuses = useSelector(setStatuses)
+    const isLoadStatuses = useSelector(isLoadingStatuses)
+    useEffect(() => { dispatch(getStatuses()) }, [dispatch])
+
+    const priorities = useSelector(setPriorities)
+    const isLoadPriorities = useSelector(isLoadingPriorities)
+    useEffect(() => { dispatch(getPriorities()) }, [dispatch])
+
+    const sides = useSelector(setSides)
 
     //New task
     const createTask = (data: TNewTask) => {
@@ -133,15 +131,15 @@ const TaskPage: React.FC = () => {
                     <Grid container spacing={2} direction="column">
                         <Grid item>
                             <ButtonGroup>
-                                <Button type="submit" variant="contained" color="primary" disabled={loading}>
+                                <Button type="submit" variant="contained" color="primary">
                                     Создать
                                 </Button>
-                                <Button variant="contained" color="secondary" disabled={loading}>
+                                <Button variant="contained" color="secondary">
                                     Отмена
                                 </Button>
                             </ButtonGroup>
                         </Grid>
-                        {!!priorities && <Grid item>
+                        <Grid item>
                             <Controller
                                 name="priority"
                                 control={control}
@@ -157,6 +155,7 @@ const TaskPage: React.FC = () => {
                                         fullWidth={true}
                                         size="small"
                                         select
+                                        disabled={isLoadPriorities}
                                     >
                                         {priorities.map((value, i) => {
                                             return (
@@ -166,8 +165,8 @@ const TaskPage: React.FC = () => {
                                     </TextField>
                                 )}
                             />
-                        </Grid>}
-                        {!!statuses && <Grid item>
+                        </Grid>
+                        <Grid item>
                             <Controller
                                 name="status"
                                 control={control}
@@ -183,6 +182,7 @@ const TaskPage: React.FC = () => {
                                         fullWidth={true}
                                         size="small"
                                         select
+                                        disabled={isLoadStatuses}
                                     >
                                         {statuses.map((value, i) => {
                                             return (
@@ -192,7 +192,7 @@ const TaskPage: React.FC = () => {
                                     </TextField>
                                 )}
                             />
-                        </Grid>}
+                        </Grid>
                         <Grid item>
                             <Controller
                                 name="side"
@@ -210,13 +210,16 @@ const TaskPage: React.FC = () => {
                                         size="small"
                                         select
                                     >
-                                        <MenuItem value="front">Front</MenuItem>
-                                        <MenuItem value="back">Back</MenuItem>
+                                        {sides.map((value, i) => {
+                                            return (
+                                                <MenuItem key={i} value={sides[i]._id}>{sides[i].label}</MenuItem>
+                                            )
+                                        })}
                                     </TextField>
                                 )}
                             />
                         </Grid>
-                        {!!users && <Grid item>
+                        <Grid item>
                             <Controller
                                 name="executor"
                                 control={control}
@@ -230,6 +233,7 @@ const TaskPage: React.FC = () => {
                                         error={!!error}
                                         helperText={error ? error.message : null}
                                         fullWidth={true}
+                                        disabled={isLoadUsers}
                                         select
                                         size="small"
                                     >
@@ -241,7 +245,7 @@ const TaskPage: React.FC = () => {
                                     </TextField>
                                 )}
                             />
-                        </Grid>}
+                        </Grid>
                     </Grid>
                 </Paper>
             </Grid>
