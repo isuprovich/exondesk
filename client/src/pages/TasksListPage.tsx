@@ -6,6 +6,7 @@ import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined'
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined'
 import { CustomChip } from '../components/StyledComponents/CustomChip'
 import { tasksAPI, TTasksArray } from '../api/tasks.api'
+import { Link } from 'react-router-dom'
 
 export type TChipStyleProps = {
     $color?: string
@@ -22,7 +23,7 @@ const TasksListPage: React.FC = () => {
     //Получение задач
     useEffect(() => {
         tasksAPI.getAllTasks()
-        .then(res => setTasks(res))
+            .then(res => setTasks(res))
     }, [taskToDelete])
 
     // Удаление задачи
@@ -68,7 +69,11 @@ const TasksListPage: React.FC = () => {
                 <Grid container alignItems="stretch">
                     <Grid item container xs={12} sm={12} alignItems="stretch">
                         <Grid item>
-                            <Typography style={{ marginRight: '8px' }}>
+                            <Typography
+                                style={{ marginRight: '8px' }}
+                                component={Link}
+                                to={`/task/${tasks[i].number}`}
+                            >
                                 <strong>MS-{tasks[i].number}</strong>
                             </Typography>
                         </Grid>

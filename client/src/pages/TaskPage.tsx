@@ -1,4 +1,4 @@
-import { Button, Grid, MenuItem, Paper, TextField, Accordion, AccordionDetails, AccordionSummary, ButtonGroup } from '@material-ui/core'
+import { Button, Grid, MenuItem, Paper, TextField, Accordion, AccordionDetails, AccordionSummary, ButtonGroup, LinearProgress } from '@material-ui/core'
 import { useSnackbar } from 'notistack'
 import React, { useEffect } from 'react'
 import { useForm, Controller, useWatch, Control, FieldValues } from 'react-hook-form'
@@ -10,6 +10,9 @@ import { isLoadingUsers, setUsers } from '../redux/selectors/users.selector'
 import { setStatuses, setPriorities, isLoadingPriorities, isLoadingStatuses, setSides } from '../redux/selectors/tags.selector'
 import { getUsers } from '../redux/reducers/users.reducer'
 import { getPriorities, getStatuses } from '../redux/reducers/tags.reducer'
+import { useParams } from 'react-router-dom'
+import { isLoadingTask, setTask } from '../redux/selectors/tasks.selector'
+import { getTask } from '../redux/reducers/tasks.reducer'
 
 type TControl = {
     control: Control<FieldValues>
@@ -37,8 +40,12 @@ const PreviewComponent: React.FC<TControl> = ({ control }) => {
     </>
 }
 
-const TaskPage: React.FC = () => {
-    const { handleSubmit, control } = useForm()
+type TTaskPage = {
+    mode: string
+}
+const TaskPage: React.FC<TTaskPage> = ({ mode }) => {
+
+    const { handleSubmit, control, setValue } = useForm()
     const { enqueueSnackbar } = useSnackbar()
     const dispatch = useDispatch()
 
@@ -58,6 +65,22 @@ const TaskPage: React.FC = () => {
 
     const sides = useSelector(setSides)
 
+    //GET CURRENT TASK TO EDIT
+    const urlParams = useParams<{ taskId: string }>()
+    const currentTaskId = urlParams.taskId
+    const currentTask = {...useSelector(setTask)}
+    const isCurrentTaskLoading = useSelector(isLoadingTask)
+    useEffect(() => {
+        dispatch(getTask(currentTaskId))
+    }, [dispatch, currentTaskId])
+    useEffect(() => {
+        if(isCurrentTaskLoading) {
+            //@ts-ignore
+            console.log(currentTask.task.taskname)
+            setValue("taskname", currentTask.taskname)
+        }
+    }, [setValue, isCurrentTaskLoading])
+
     //New task
     const createTask = (data: TNewTask) => {
         tasksAPI.newTask(data).then(res => {
@@ -67,6 +90,7 @@ const TaskPage: React.FC = () => {
         })
     }
 
+    if (isCurrentTaskLoading) return <LinearProgress />
     return <form onSubmit={handleSubmit(createTask)}>
         <Grid container>
             <Grid item style={{ flexGrow: 1 }}>

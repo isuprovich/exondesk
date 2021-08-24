@@ -22,10 +22,10 @@ const initialState = {
     isStatusesLoading: false as boolean,
     isPrioritiesLoading: false as boolean
 }
-export type TUsersState = typeof initialState
+export type TTagsState = typeof initialState
 
 //USERS REDUCER
-const tagsReducer = (state = initialState, action: TTagsActions): TUsersState => {
+const tagsReducer = (state = initialState, action: TTagsActions): TTagsState => {
     switch (action.type) {
         case 'SET_STATUSES':
             return {

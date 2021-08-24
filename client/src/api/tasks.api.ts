@@ -30,6 +30,10 @@ export const tasksAPI = {
         return api.get<TTasks>('/tasks/gettasks')
         .then(res => res.data).then(res => {return res.tasks})
     },
+    getTask(task: string) {
+        return api.get<TTask>(`/tasks/${task}`)
+        .then(res => res.data)
+    },
     newTask(data: TNewTask) {
         return api.post('/tasks/newtask', data)
     },

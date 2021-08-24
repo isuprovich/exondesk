@@ -6,12 +6,14 @@ import TaskPage from './pages/TaskPage'
 import SettingsPage from './pages/SettingsPage'
 
 export const useRoutes = (isAuth: boolean) => {
+
     if (isAuth) {
         return (
             <Switch>
                 <Route path='/kanban' render={() => <KanbanPage />} />
                 <Route path='/tasks' render={() => <TasksListPage />} />
-                <Route path='/newtask' render={() => <TaskPage />} />
+                <Route path='/newtask' render={() => <TaskPage mode={'new'} />} />
+                <Route path='/task/:taskId?' render={() => <TaskPage mode={'edit'} />} />
                 <Route path='/settings' render={() => <SettingsPage />} />
                 <Redirect to='/tasks' />
             </Switch>

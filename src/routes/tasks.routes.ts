@@ -47,7 +47,9 @@ router.get('/:id', async (req: Request, res: Response) => {
         const tasknumber = Number(req.params.id)
         await taskModel
             .findOne({ number: tasknumber })
-            .populate('executor', 'email')
+            .populate('executor', ['email', 'name'])
+            .populate('status', ['value', 'label', 'name', 'color'])
+            .populate('priority', ['value', 'label', 'name', 'color'])
             .exec((error, task) => {
                 if (error) return res.status(500).json({ message: error })
                 return res.json({ task: task })
