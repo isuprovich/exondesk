@@ -5,7 +5,7 @@ export type TTask = {
     number: string
     taskname: string
     side: string
-    executor: {email: string, name: string}
+    executor: {_id: string, email: string, name: string}
     priority: {_id: string, value: string, label: string, color: string}
     status: {_id: string, value: string, label: string, color: string}
     description: string
@@ -31,8 +31,8 @@ export const tasksAPI = {
         .then(res => res.data).then(res => {return res.tasks})
     },
     getTask(task: string) {
-        return api.get<TTask>(`/tasks/${task}`)
-        .then(res => res.data)
+        return api.get<{task: TTask}>(`/tasks/${task}`)
+        .then(res => res.data).then(res => {return res.task})
     },
     newTask(data: TNewTask) {
         return api.post('/tasks/newtask', data)

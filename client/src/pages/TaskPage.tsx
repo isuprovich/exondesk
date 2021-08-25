@@ -8,8 +8,6 @@ import { tasksAPI, TNewTask } from '../api/tasks.api'
 import { useSelector, useDispatch } from 'react-redux'
 import { isLoadingUsers, setUsers } from '../redux/selectors/users.selector'
 import { setStatuses, setPriorities, isLoadingPriorities, isLoadingStatuses, setSides } from '../redux/selectors/tags.selector'
-import { getUsers } from '../redux/reducers/users.reducer'
-import { getPriorities, getStatuses } from '../redux/reducers/tags.reducer'
 import { useParams } from 'react-router-dom'
 import { isLoadingTask, setTask } from '../redux/selectors/tasks.selector'
 import { getTask } from '../redux/reducers/tasks.reducer'
@@ -45,43 +43,35 @@ type TTaskPage = {
 }
 const TaskPage: React.FC<TTaskPage> = ({ mode }) => {
 
-    const { handleSubmit, control, setValue } = useForm()
+    const { handleSubmit, control } = useForm()
     const { enqueueSnackbar } = useSnackbar()
     const dispatch = useDispatch()
 
-    //GETTING DATA FOR SELECTORS
+    //#region GETTING DATA FOR SELECTORS
 
     const users = useSelector(setUsers)
-    const isLoadUsers = useSelector(isLoadingUsers)
-    useEffect(() => { dispatch(getUsers()) }, [dispatch])
-
     const statuses = useSelector(setStatuses)
-    const isLoadStatuses = useSelector(isLoadingStatuses)
-    useEffect(() => { dispatch(getStatuses()) }, [dispatch])
-
     const priorities = useSelector(setPriorities)
-    const isLoadPriorities = useSelector(isLoadingPriorities)
-    useEffect(() => { dispatch(getPriorities()) }, [dispatch])
-
     const sides = useSelector(setSides)
+    const isLoadUsers = useSelector(isLoadingUsers)
+    const isLoadStatuses = useSelector(isLoadingStatuses)
+    const isLoadPriorities = useSelector(isLoadingPriorities)
 
-    //GET CURRENT TASK TO EDIT
+    //#endregion GETTING DATA FOR SELECTORS
+
+    //#region GET CURRENT TASK TO EDIT
+
     const urlParams = useParams<{ taskId: string }>()
     const currentTaskId = urlParams.taskId
-    const currentTask = {...useSelector(setTask)}
+    const currentTask = useSelector(setTask)
     const isCurrentTaskLoading = useSelector(isLoadingTask)
     useEffect(() => {
-        dispatch(getTask(currentTaskId))
-    }, [dispatch, currentTaskId])
-    useEffect(() => {
-        if(isCurrentTaskLoading) {
-            //@ts-ignore
-            console.log(currentTask.task.taskname)
-            setValue("taskname", currentTask.taskname)
-        }
-    }, [setValue, isCurrentTaskLoading])
+        mode === 'edit' && dispatch(getTask(currentTaskId))
+    }, [mode, dispatch, currentTaskId])
 
-    //New task
+    //#endregion GET CURRENT TASK TO EDIT
+
+    //#region NEW TASK
     const createTask = (data: TNewTask) => {
         tasksAPI.newTask(data).then(res => {
             enqueueSnackbar('Задача успешно создана', { variant: 'success' })
@@ -89,6 +79,7 @@ const TaskPage: React.FC<TTaskPage> = ({ mode }) => {
             enqueueSnackbar('Ошибка при создании задачи', { variant: 'error' })
         })
     }
+    //#endregion NEW TASK
 
     if (isCurrentTaskLoading) return <LinearProgress />
     return <form onSubmit={handleSubmit(createTask)}>
