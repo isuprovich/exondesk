@@ -1,26 +1,21 @@
-import { Button, Grid, MenuItem, Paper, TextField, Accordion, AccordionDetails, AccordionSummary, ButtonGroup, LinearProgress } from '@material-ui/core'
+import { Button, Grid, MenuItem, Paper, TextField, Accordion, AccordionDetails, AccordionSummary, ButtonGroup, LinearProgress, Typography } from '@material-ui/core'
 import { useSnackbar } from 'notistack'
-import React, { useEffect } from 'react'
-import { useForm, Controller, useWatch, Control, FieldValues } from 'react-hook-form'
+import React, { useEffect, useState } from 'react'
+import { useForm, Controller } from 'react-hook-form'
 import ReactMarkdown from 'react-markdown'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { tasksAPI, TNewTask } from '../api/tasks.api'
 import { useSelector, useDispatch } from 'react-redux'
 import { isLoadingUsers, setUsers } from '../redux/selectors/users.selector'
 import { setStatuses, setPriorities, isLoadingPriorities, isLoadingStatuses, setSides } from '../redux/selectors/tags.selector'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { isLoadingTask, setTask } from '../redux/selectors/tasks.selector'
 import { getTask } from '../redux/reducers/tasks.reducer'
 
 type TControl = {
-    control: Control<FieldValues>
+    description: string
 }
-const PreviewComponent: React.FC<TControl> = ({ control }) => {
-    const descriptionPreview = useWatch({
-        control,
-        name: "description",
-        defaultValue: ""
-    }).split('\n').join('  \n')
+const PreviewComponent: React.FC<TControl> = ({ description }) => {
     return <>
         <Accordion
             variant="outlined"
@@ -31,19 +26,18 @@ const PreviewComponent: React.FC<TControl> = ({ control }) => {
                 style={{ display: 'block', padding: '0 16px' }}
             >
                 <ReactMarkdown>
-                    {descriptionPreview}
+                    {description}
                 </ReactMarkdown>
             </AccordionDetails>
         </Accordion>
     </>
 }
-
 type TTaskPage = {
-    mode: string
+    editMode: boolean
 }
-const TaskPage: React.FC<TTaskPage> = ({ mode }) => {
+const TaskPage: React.FC<TTaskPage> = ({ editMode }) => {
 
-    const { handleSubmit, control } = useForm()
+    const { handleSubmit, control, reset, watch } = useForm()
     const { enqueueSnackbar } = useSnackbar()
     const dispatch = useDispatch()
 
@@ -60,28 +54,67 @@ const TaskPage: React.FC<TTaskPage> = ({ mode }) => {
     //#endregion GETTING DATA FOR SELECTORS
 
     //#region GET CURRENT TASK TO EDIT
-
     const urlParams = useParams<{ taskId: string }>()
-    const currentTaskId = urlParams.taskId
-    const currentTask = useSelector(setTask)
-    const isCurrentTaskLoading = useSelector(isLoadingTask)
+    const queryTaskId = urlParams.taskId
+    const fetchedTask = useSelector(setTask)
+    const isFetchingTask = useSelector(isLoadingTask)
+    const [isEdit, setIsEdit] = useState(false)
+    const previewDescription = watch('description')
     useEffect(() => {
-        mode === 'edit' && dispatch(getTask(currentTaskId))
-    }, [mode, dispatch, currentTaskId])
+        if (editMode) {
+            setIsEdit(true)
+        } else {
+            setIsEdit(false)
+        }
+    }, [editMode])
+    useEffect(() => {
+        if (editMode) {
+            dispatch(getTask(queryTaskId))
+        }
+    }, [editMode, dispatch, queryTaskId])
+    useEffect(() => {
+        const defaultValues = isEdit ? {
+            taskname: fetchedTask?.taskname,
+            description: fetchedTask?.description,
+            priority: fetchedTask?.priority._id,
+            status: fetchedTask?.status._id,
+            side: fetchedTask?.side,
+            executor: fetchedTask?.executor._id
+        } : {
+            taskname: '',
+            description: '',
+            priority: '',
+            status: '',
+            side: '',
+            executor: ''
+        }
+        if (defaultValues) {
+            reset(defaultValues)
+        }
+    }, [reset, fetchedTask, isEdit])
 
     //#endregion GET CURRENT TASK TO EDIT
 
     //#region NEW TASK
     const createTask = (data: TNewTask) => {
-        tasksAPI.newTask(data).then(res => {
-            enqueueSnackbar('Задача успешно создана', { variant: 'success' })
-        }, res => {
-            enqueueSnackbar('Ошибка при создании задачи', { variant: 'error' })
-        })
+        if(!editMode){
+            tasksAPI.newTask(data).then(() => {
+                enqueueSnackbar('Задача успешно создана', { variant: 'success' })
+            }, () => {
+                enqueueSnackbar('Ошибка при создании задачи', { variant: 'error' })
+            })
+        }
+        if(editMode){
+            tasksAPI.editTask(data, queryTaskId).then(() => {
+                enqueueSnackbar(`Задача MS-${queryTaskId} успешно обновлена`, { variant: 'success' })
+            }, () => {
+                enqueueSnackbar('Ошибка при создании задачи', { variant: 'error' })
+            })
+        }
     }
     //#endregion NEW TASK
 
-    if (isCurrentTaskLoading) return <LinearProgress />
+    if (isFetchingTask) return <LinearProgress />
     return <form onSubmit={handleSubmit(createTask)}>
         <Grid container>
             <Grid item style={{ flexGrow: 1 }}>
@@ -93,6 +126,11 @@ const TaskPage: React.FC<TTaskPage> = ({ mode }) => {
                     }}
                 >
                     <Grid container spacing={2} direction="column">
+                        <Grid item>
+                            <Typography variant="h5">
+                                {isEdit ? `Редактирование задачи MS-${fetchedTask?.number}` : 'Новая задача'}
+                            </Typography>
+                        </Grid>
                         <Grid item>
                             <Controller
                                 name="taskname"
@@ -136,7 +174,7 @@ const TaskPage: React.FC<TTaskPage> = ({ mode }) => {
                             />
                         </Grid>
                         <Grid item>
-                            <PreviewComponent control={control} />
+                            <PreviewComponent description={previewDescription} />
                         </Grid>
                     </Grid>
                 </Paper>
@@ -147,9 +185,9 @@ const TaskPage: React.FC<TTaskPage> = ({ mode }) => {
                         <Grid item>
                             <ButtonGroup>
                                 <Button type="submit" variant="contained" color="primary">
-                                    Создать
+                                    {!isEdit ? 'Создать' : 'Изменить'}
                                 </Button>
-                                <Button variant="contained" color="secondary">
+                                <Button variant="contained" color="secondary" component={Link} to='/tasks'>
                                     Отмена
                                 </Button>
                             </ButtonGroup>
@@ -158,7 +196,7 @@ const TaskPage: React.FC<TTaskPage> = ({ mode }) => {
                             <Controller
                                 name="priority"
                                 control={control}
-                                defaultValue={''}
+                                defaultValue=""
                                 render={({ field: { onChange, value }, fieldState: { error } }) => (
                                     <TextField
                                         label="Приоритет"

@@ -71,8 +71,6 @@ const TasksListPage: React.FC = () => {
                         <Grid item>
                             <Typography
                                 style={{ marginRight: '8px' }}
-                                component={Link}
-                                to={`/task/${tasks[i].number}`}
                             >
                                 <strong>MS-{tasks[i].number}</strong>
                             </Typography>
@@ -84,7 +82,7 @@ const TasksListPage: React.FC = () => {
                         </Grid>
                         <Grid item>
                             <ButtonGroup size="small">
-                                <Button color="primary" onClick={handleEditTask}><EditOutlinedIcon /></Button>
+                                <Button component={Link} to={`/task/${tasks[i].number}`} color="primary" onClick={handleEditTask}><EditOutlinedIcon /></Button>
                                 <Button color="secondary" onClick={() => handleOpenDelete(tasks[i].number)}><DeleteOutlinedIcon /></Button>
                             </ButtonGroup>
                         </Grid>

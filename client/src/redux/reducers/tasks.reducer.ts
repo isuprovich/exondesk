@@ -3,7 +3,7 @@ import { ThunkAction } from "redux-thunk"
 import { TAppState, TInferActions } from "../store"
 
 const initialState = {
-    currentTask: {} as TTask,
+    currentTask: null as TTask | null,
     isCurrentTaskLoad: false as boolean
 }
 export type TTasksState = typeof initialState
@@ -30,7 +30,7 @@ const tasksReducer = (state = initialState, action: TTasksActions): TTasksState 
 type TTasksActions = TInferActions<typeof tasksActions>
 export const tasksActions = {
     setTask: (task: TTask) => ({ type: 'SET_TASK', payload: task } as const),
-    setLoadTask: (isTaskLoad: boolean) => ({ type: 'SET_LOAD_TASK', payload: isTaskLoad} as const)
+    setLoadTask: (isTaskLoad: boolean) => ({ type: 'SET_LOAD_TASK', payload: isTaskLoad } as const),
 }
 
 //THUNKS

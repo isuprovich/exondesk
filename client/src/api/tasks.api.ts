@@ -39,5 +39,8 @@ export const tasksAPI = {
     },
     deleteTask(task: string) {
         return api.delete(`/tasks/${task}`)
+    },
+    editTask(data: TNewTask, taskNumber: string) {
+        return api.post(`/tasks/${taskNumber}`, data)
     }
 }

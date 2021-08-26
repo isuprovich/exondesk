@@ -22,6 +22,19 @@ router.post('/newtask', [],
         }
     })
 
+router.post('/:id', [],
+    async (req: Request, res: Response) => {
+        const tasknumber = Number(req.params.id)
+        await taskModel
+            .updateOne({ number: tasknumber }, {
+                ...req.body, dateOfUpdate: Date.now()
+            })
+            .exec((error, task) => {
+                if (error) return res.status(500).json({ message: error })
+                return res.json(task)
+            })
+    })
+
 // /api/tasks/gettasks - получить весь список задач
 
 router.get('/gettasks', [], async (req: Request, res: Response) => {
