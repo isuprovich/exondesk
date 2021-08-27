@@ -6,3 +6,6 @@ export const setTask = (state: TAppState) => {
 export const isLoadingTask = (state: TAppState) => {
     return state.tasks.isCurrentTaskLoad
 }
+export const setTasks = (state: TAppState) => {
+    return state.tasks.allTasks
+}

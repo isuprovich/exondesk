@@ -1,10 +1,11 @@
-import { tasksAPI, TTask } from './../../api/tasks.api';
+import { tasksAPI, TTask, TTasksArray } from './../../api/tasks.api';
 import { ThunkAction } from "redux-thunk"
 import { TAppState, TInferActions } from "../store"
 
 const initialState = {
+    allTasks: null as unknown as TTask[],
     currentTask: null as TTask | null,
-    isCurrentTaskLoad: false as boolean
+    isCurrentTaskLoad: true as boolean
 }
 export type TTasksState = typeof initialState
 
@@ -21,6 +22,11 @@ const tasksReducer = (state = initialState, action: TTasksActions): TTasksState 
                 ...state,
                 isCurrentTaskLoad: action.payload
             }
+        case 'SET_TASKS':
+            return {
+                ...state,
+                allTasks: action.payload
+            }
         default:
             return state
     }
@@ -29,6 +35,8 @@ const tasksReducer = (state = initialState, action: TTasksActions): TTasksState 
 //ACTION CREATORS
 type TTasksActions = TInferActions<typeof tasksActions>
 export const tasksActions = {
+    setTasks: (tasks: TTask[]) => ({type: 'SET_TASKS', payload: tasks} as const),
+    setLoadTasks: (isTasksLoad: boolean) => ({type: 'SET_LOAD_TASKS', payload: isTasksLoad} as const),
     setTask: (task: TTask) => ({ type: 'SET_TASK', payload: task } as const),
     setLoadTask: (isTaskLoad: boolean) => ({ type: 'SET_LOAD_TASK', payload: isTaskLoad } as const),
 }
@@ -44,6 +52,14 @@ export const getTask = (taskId: string): ThunkType => async (dispatch) => {
     }, error => {
         console.log(error)
         dispatch(tasksActions.setLoadTask(false))
+    })
+}
+export const getTasks = (): ThunkType => async (dispatch) => {
+    await tasksAPI.getAllTasks().then(tasks => {
+        const reverseTasks = tasks.reverse()
+        dispatch(tasksActions.setTasks(reverseTasks))
+    }, error => {
+        console.log(error)
     })
 }
 

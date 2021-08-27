@@ -1,12 +1,15 @@
 import { Avatar, Button, ButtonGroup, Grid, Paper, Typography, Dialog, DialogTitle, DialogActions, LinearProgress } from '@material-ui/core'
 import { useState, useEffect, useCallback } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import styled from 'styled-components'
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined'
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined'
 import { CustomChip } from '../components/StyledComponents/CustomChip'
-import { tasksAPI, TTasksArray } from '../api/tasks.api'
+import { tasksAPI } from '../api/tasks.api'
 import { Link } from 'react-router-dom'
+import { setTasks } from '../redux/selectors/tasks.selector'
+import { getTasks } from '../redux/reducers/tasks.reducer'
 
 export type TChipStyleProps = {
     $color?: string
@@ -16,15 +19,16 @@ const CardPaper = styled(Paper) <TChipStyleProps>`
 `
 const TasksListPage: React.FC = () => {
     const { enqueueSnackbar } = useSnackbar()
-    const [tasks, setTasks] = useState<TTasksArray | null>(null)
+    //const [tasks, setTasks] = useState<TTasksArray | null>(null)
     const [isDeleteOpen, setOpenDelete] = useState(false)
     const [taskToDelete, setTaskToDelete] = useState('')
 
     //Получение задач
+    const dispatch = useDispatch()
+    const tasks = useSelector(setTasks)
     useEffect(() => {
-        tasksAPI.getAllTasks()
-            .then(res => setTasks(res))
-    }, [taskToDelete])
+        dispatch(getTasks())
+    }, [dispatch])
 
     // Удаление задачи
     const handleOpenDelete = (tasknumber: string) => {
@@ -40,18 +44,16 @@ const TasksListPage: React.FC = () => {
                 setOpenDelete(false)
                 enqueueSnackbar(`Задача MS-${taskToDelete} удалена`, { variant: 'success' })
                 setTaskToDelete('')
+                dispatch(getTasks())
             }, res => {
                 setOpenDelete(false)
                 enqueueSnackbar(`Задача MS-${taskToDelete} не удалена`, { variant: 'error' })
                 setTaskToDelete('')
             })
         }
-    }, [enqueueSnackbar])
+    }, [enqueueSnackbar, dispatch])
 
     //Заглушки действий
-    const handleEditTask = () => {
-        console.info('Redirect task edit')
-    }
     const handleClick = () => {
         console.info('You clicked the Chip.')
     }
@@ -59,7 +61,7 @@ const TasksListPage: React.FC = () => {
     //Рендер
     if (!tasks) return <LinearProgress />
     return <Paper variant='outlined' style={{ padding: '8px 16px', margin: '16px' }}>
-        {tasks && tasks.reverse().map((value, i) => {
+        {tasks.map((value, i) => {
             return <CardPaper
                 key={i}
                 variant='outlined'
@@ -82,7 +84,7 @@ const TasksListPage: React.FC = () => {
                         </Grid>
                         <Grid item>
                             <ButtonGroup size="small">
-                                <Button component={Link} to={`/task/${tasks[i].number}`} color="primary" onClick={handleEditTask}><EditOutlinedIcon /></Button>
+                                <Button component={Link} to={`/task/${tasks[i].number}`} color="primary"><EditOutlinedIcon /></Button>
                                 <Button color="secondary" onClick={() => handleOpenDelete(tasks[i].number)}><DeleteOutlinedIcon /></Button>
                             </ButtonGroup>
                         </Grid>
