@@ -8,7 +8,7 @@ import { tasksAPI, TNewTask } from '../api/tasks.api'
 import { useSelector, useDispatch } from 'react-redux'
 import { isLoadingUsers, setUsers } from '../redux/selectors/users.selector'
 import { setStatuses, setPriorities, isLoadingPriorities, isLoadingStatuses, setSides } from '../redux/selectors/tags.selector'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useHistory, useParams } from 'react-router-dom'
 import { isLoadingTask, setTask } from '../redux/selectors/tasks.selector'
 import { getTask } from '../redux/reducers/tasks.reducer'
 
@@ -37,6 +37,7 @@ type TTaskPage = {
 }
 const TaskPage: React.FC<TTaskPage> = ({ editMode }) => {
 
+    const history = useHistory()
     const { handleSubmit, control, reset, watch } = useForm()
     const { enqueueSnackbar } = useSnackbar()
     const dispatch = useDispatch()
@@ -99,6 +100,7 @@ const TaskPage: React.FC<TTaskPage> = ({ editMode }) => {
     const createTask = (data: TNewTask) => {
         if(!editMode){
             tasksAPI.newTask(data).then(() => {
+                history.goBack()
                 enqueueSnackbar('Задача успешно создана', { variant: 'success' })
             }, () => {
                 enqueueSnackbar('Ошибка при создании задачи', { variant: 'error' })
@@ -106,6 +108,7 @@ const TaskPage: React.FC<TTaskPage> = ({ editMode }) => {
         }
         if(editMode){
             tasksAPI.editTask(data, queryTaskId).then(() => {
+                history.goBack()
                 enqueueSnackbar(`Задача MS-${queryTaskId} успешно обновлена`, { variant: 'success' })
             }, () => {
                 enqueueSnackbar('Ошибка при создании задачи', { variant: 'error' })
@@ -210,6 +213,7 @@ const TaskPage: React.FC<TTaskPage> = ({ editMode }) => {
                                         select
                                         disabled={isLoadPriorities}
                                     >
+                                        <MenuItem value={""}>Не выбран</MenuItem>
                                         {priorities.map((value, i) => {
                                             return (
                                                 <MenuItem key={i} value={priorities[i]._id}>{priorities[i].label}</MenuItem>
@@ -237,6 +241,7 @@ const TaskPage: React.FC<TTaskPage> = ({ editMode }) => {
                                         select
                                         disabled={isLoadStatuses}
                                     >
+                                        <MenuItem value={""}>Не выбран</MenuItem>
                                         {statuses.map((value, i) => {
                                             return (
                                                 <MenuItem key={i} value={statuses[i]._id}>{statuses[i].label}</MenuItem>
@@ -263,6 +268,7 @@ const TaskPage: React.FC<TTaskPage> = ({ editMode }) => {
                                         size="small"
                                         select
                                     >
+                                        <MenuItem value={""}>Не выбран</MenuItem>
                                         {sides.map((value, i) => {
                                             return (
                                                 <MenuItem key={i} value={sides[i]._id}>{sides[i].label}</MenuItem>
@@ -290,6 +296,7 @@ const TaskPage: React.FC<TTaskPage> = ({ editMode }) => {
                                         select
                                         size="small"
                                     >
+                                        <MenuItem value={""}>Не выбран</MenuItem>
                                         {users.map((value, i) => {
                                             return (
                                                 <MenuItem key={i} value={users[i]._id}>{users[i].name === undefined ? users[i].email : users[i].name}</MenuItem>

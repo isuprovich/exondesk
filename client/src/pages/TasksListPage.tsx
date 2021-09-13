@@ -19,7 +19,6 @@ const CardPaper = styled(Paper) <TChipStyleProps>`
 `
 const TasksListPage: React.FC = () => {
     const { enqueueSnackbar } = useSnackbar()
-    //const [tasks, setTasks] = useState<TTasksArray | null>(null)
     const [isDeleteOpen, setOpenDelete] = useState(false)
     const [taskToDelete, setTaskToDelete] = useState('')
 
