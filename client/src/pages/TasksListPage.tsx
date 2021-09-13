@@ -61,12 +61,13 @@ const TasksListPage: React.FC = () => {
     //Рендер
     if (!tasks) return <LinearProgress />
     return <Paper variant='outlined' style={{ padding: '8px 16px', margin: '16px' }}>
+        {tasks.length === 0 && <Typography align="center">Задач нет</Typography>}
         {tasks.map((value, i) => {
             return <CardPaper
                 key={i}
                 variant='outlined'
                 style={{ padding: '8px 16px', margin: '8px 0' }}
-                $color={tasks[i].priority.color}
+                $color={tasks[i].priority === null ? 'grey' : tasks[i].priority?.color}
             >
                 <Grid container alignItems="stretch">
                     <Grid item container xs={12} sm={12} alignItems="stretch">
@@ -92,23 +93,23 @@ const TasksListPage: React.FC = () => {
                     <Grid item xs={12} sm={12} container>
                         <Grid item xs={8} sm={8}>
                             <CustomChip
-                                label={tasks[i].priority.label ? tasks[i].priority.label : 'undefined'}
-                                $color={tasks[i].priority.color ? tasks[i].priority.color : 'gray'}
+                                label={tasks[i].priority?.label ? tasks[i].priority?.label : 'Нет приоритета'}
+                                $color={tasks[i].priority?.color ? tasks[i].priority?.color : '#9e9e9e'}
                                 onClick={handleClick}
                             />
                             <CustomChip
-                                label={tasks[i].status.label ? tasks[i].status.label : 'undefined'}
-                                $color={tasks[i].status.color ? tasks[i].status.color : 'gray'}
+                                label={tasks[i].status?.label ? tasks[i].status?.label : 'Нет статуса'}
+                                $color={tasks[i].status?.color ? tasks[i].status?.color : '#9e9e9e'}
                                 onClick={handleClick}
                             />
                             <CustomChip
-                                label={tasks[i].side === 'front' ? 'Front' : 'Back'}
-                                $color={tasks[i].side === 'front' ? '#0097a7' : '#ffa000'}
+                                label={tasks[i].side === '' ? 'Нет подсистемы' : tasks[i].side === 'front' ? 'Front' : 'Back'}
+                                $color={tasks[i].side === '' ? '#9e9e9e' : tasks[i].side === 'front' ? '#0097a7' : '#ffa000'}
                                 onClick={handleClick}
                             />
                             <CustomChip
-                                avatar={<Avatar>{tasks[i].executor.name === undefined ? tasks[i].executor.email.slice(0, 2) : tasks[i].executor.name.slice(0, 2)}</Avatar>}
-                                label={tasks[i].executor.name === undefined ? tasks[i].executor.email : tasks[i].executor.name}
+                                avatar={<Avatar>{tasks[i].executor?.name === undefined ? tasks[i].executor?.email.slice(0, 2) : tasks[i].executor?.name.slice(0, 2)}</Avatar>}
+                                label={tasks[i].executor === null ? 'Нет исполнителя' : tasks[i].executor?.name === undefined ? tasks[i].executor?.email : tasks[i].executor?.name}
                                 onClick={handleClick}
                                 $color={"#9e9e9e"}
                             />

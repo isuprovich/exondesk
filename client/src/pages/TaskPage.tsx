@@ -76,10 +76,10 @@ const TaskPage: React.FC<TTaskPage> = ({ editMode }) => {
         const defaultValues = isEdit ? {
             taskname: fetchedTask?.taskname,
             description: fetchedTask?.description,
-            priority: fetchedTask?.priority._id,
-            status: fetchedTask?.status._id,
+            priority: fetchedTask?.priority?._id,
+            status: fetchedTask?.status?._id,
             side: fetchedTask?.side,
-            executor: fetchedTask?.executor._id
+            executor: fetchedTask?.executor?._id
         } : {
             taskname: '',
             description: '',

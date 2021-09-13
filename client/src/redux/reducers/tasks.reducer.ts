@@ -1,11 +1,11 @@
-import { tasksAPI, TTask, TTasksArray } from './../../api/tasks.api';
+import { tasksAPI, TTask } from './../../api/tasks.api';
 import { ThunkAction } from "redux-thunk"
 import { TAppState, TInferActions } from "../store"
 
 const initialState = {
     allTasks: null as unknown as TTask[],
     currentTask: null as TTask | null,
-    isCurrentTaskLoad: true as boolean
+    isCurrentTaskLoad: false as boolean
 }
 export type TTasksState = typeof initialState
 

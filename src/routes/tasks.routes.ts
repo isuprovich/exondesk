@@ -41,9 +41,9 @@ router.get('/gettasks', [], async (req: Request, res: Response) => {
     try {
         await taskModel
             .find({ isDeleted: false }, { __v: 0 })
-            .populate('executor', ['email', 'name'])
-            .populate('status', ['value', 'label', 'name', 'color'])
-            .populate('priority', ['value', 'label', 'name', 'color'])
+            .populate('executor', ['email', 'name'], undefined, { _id: { $exists: true }})
+            .populate('status', ['value', 'label', 'name', 'color'], undefined, { _id: { $exists: true }})
+            .populate('priority', ['value', 'label', 'name', 'color'], undefined, { _id: { $exists: true }})
             .exec((error, tasks) => {
                 if (error) return res.status(500).json({ message: error })
                 return res.json({ tasks: tasks })
@@ -60,9 +60,9 @@ router.get('/:id', async (req: Request, res: Response) => {
         const tasknumber = Number(req.params.id)
         await taskModel
             .findOne({ number: tasknumber })
-            .populate('executor', ['email', 'name'])
-            .populate('status', ['value', 'label', 'name', 'color'])
-            .populate('priority', ['value', 'label', 'name', 'color'])
+            .populate('executor', ['email', 'name'], undefined, { _id: { $exists: true }})
+            .populate('status', ['value', 'label', 'name', 'color'], undefined, { _id: { $exists: true }})
+            .populate('priority', ['value', 'label', 'name', 'color'], undefined, { _id: { $exists: true }})
             .exec((error, task) => {
                 if (error) return res.status(500).json({ message: error })
                 return res.json({ task: task })

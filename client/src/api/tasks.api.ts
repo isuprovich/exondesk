@@ -5,9 +5,9 @@ export type TTask = {
     number: string
     taskname: string
     side: string
-    executor: {_id: string, email: string, name: string}
-    priority: {_id: string, value: string, label: string, color: string}
-    status: {_id: string, value: string, label: string, color: string}
+    executor: {_id: string, email: string, name: string} | null
+    priority: {_id: string, value: string, label: string, color: string} | null
+    status: {_id: string, value: string, label: string, color: string} | null
     description: string
     dateOfCreation: Date
     dateOfUpdate: Date
