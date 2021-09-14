@@ -1,10 +1,11 @@
 import { ThunkAction } from "redux-thunk"
-import { TUserArray, usersAPI } from "../../api/users.api"
+import { TUser, TUserArray, usersAPI } from "../../api/users.api"
 import { TAppState, TInferActions } from "../store"
 
 const initialState = {
     users: [] as unknown as TUserArray,
-    isLoading: false as boolean
+    isLoading: false as boolean,
+    currentUser: {} as TUser
 }
 export type TUsersState = typeof initialState
 
@@ -21,6 +22,11 @@ const usersReducer = (state = initialState, action: TUsersActions): TUsersState 
                 ...state,
                 isLoading: action.payload
             }
+        case 'SET_CURRENT_USER':
+            return {
+                ...state,
+                currentUser: action.payload
+            }
         default:
             return state
     }
@@ -30,7 +36,8 @@ const usersReducer = (state = initialState, action: TUsersActions): TUsersState 
 type TUsersActions = TInferActions<typeof usersActions>
 export const usersActions = {
     setUsers: (users: TUserArray) => ({ type: 'SET_USERS', payload: users } as const),
-    setLoadStatus: (isLoading: boolean) => ({type: 'SET_LOADING_STATUS', payload: isLoading} as const)
+    setLoadStatus: (isLoading: boolean) => ({type: 'SET_LOADING_STATUS', payload: isLoading} as const),
+    setCurrentUser: (currentUser: TUser) => ({type: 'SET_CURRENT_USER', payload: currentUser} as const)
 }
 
 //THUNKS
@@ -40,6 +47,16 @@ export const getUsers = (): ThunkType => async (dispatch) => {
     dispatch(usersActions.setLoadStatus(true))
     await usersAPI.getAllUsers().then(users => {
         dispatch(usersActions.setUsers(users))
+        dispatch(usersActions.setLoadStatus(false))
+    }, error => {
+        console.log(error)
+        dispatch(usersActions.setLoadStatus(false))
+    })
+}
+export const getCurrentUser = (userId: string): ThunkType => async (dispatch) => {
+    dispatch(usersActions.setLoadStatus(true))
+    await usersAPI.getUser(userId).then(user => {
+        dispatch(usersActions.setCurrentUser(user))
         dispatch(usersActions.setLoadStatus(false))
     }, error => {
         console.log(error)

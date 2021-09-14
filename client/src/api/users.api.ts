@@ -24,7 +24,7 @@ export const usersAPI = {
         .then(res => res.data).then(res => {return res.users})
     },
     getUser(userId: string) {
-        return api.get<TUserUser>(`users/${userId}`).then(res => res.data)
+        return api.get<TUserUser>(`users/${userId}`).then(res => res.data.user)
     },
     updateUser(userId: string, data: TNewUserData | null) {
         return api.put(`users/${userId}`, data)

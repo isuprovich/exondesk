@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom'
 import { setTasks } from '../redux/selectors/tasks.selector'
 import { getTasks } from '../redux/reducers/tasks.reducer'
 import ReactMarkdown from 'react-markdown'
+import { stringAcronymize } from '../custom-functions/stringAcronymize'
 
 export type TChipStyleProps = {
     $color?: string
@@ -111,7 +112,7 @@ const TasksListPage: React.FC = () => {
                                 onClick={handleClick}
                             />
                             <CustomChip
-                                avatar={<Avatar>{tasks[i].executor?.name === undefined ? tasks[i].executor?.email.slice(0, 2) : tasks[i].executor?.name.slice(0, 2)}</Avatar>}
+                                avatar={<Avatar>{stringAcronymize(tasks[i].executor?.name === undefined ? tasks[i].executor?.email : tasks[i].executor?.name)}</Avatar>}
                                 label={tasks[i].executor === null ? 'Нет исполнителя' : tasks[i].executor?.name === undefined ? tasks[i].executor?.email : tasks[i].executor?.name}
                                 onClick={handleClick}
                                 $color={!!tasks[i].executor?.color ? tasks[i].executor?.color : "#9e9e9e"}

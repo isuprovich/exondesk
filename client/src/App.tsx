@@ -6,7 +6,7 @@ import { AuthContext } from './context/AuthContext'
 import { CssBaseline } from '@material-ui/core'
 import Navbar from './components/Navbar'
 import { getStatuses, getPriorities } from './redux/reducers/tags.reducer';
-import { getUsers } from './redux/reducers/users.reducer';
+import { getCurrentUser, getUsers } from './redux/reducers/users.reducer';
 import { useDispatch } from 'react-redux'
 import LoginPage from './pages/AuthPages';
 import KanbanPage from './pages/KanbanPage';
@@ -21,6 +21,7 @@ const App: React.FC = () => {
   useEffect(() => { dispatch(getUsers()) }, [dispatch])
   useEffect(() => { dispatch(getStatuses()) }, [dispatch])
   useEffect(() => { dispatch(getPriorities()) }, [dispatch])
+  useEffect(() => { if (userId) dispatch(getCurrentUser(userId)) }, [dispatch, userId])
 
   if (!ready) {
     return <>

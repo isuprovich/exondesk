@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { AppBar, Toolbar, Typography, Button, ButtonGroup, Avatar } from '@material-ui/core'
 import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded'
@@ -6,8 +7,10 @@ import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRoun
 import { ProfileEditDrawer } from './ProfileEditDrawer'
 import { SettingsEditDrawer } from './SettingsDrawer/SettingsEditDrawer'
 import s from '../fonts/logo.module.css'
-import { TNewUserData, TUser, usersAPI } from '../api/users.api'
+import { TNewUserData, usersAPI } from '../api/users.api'
 import { useSnackbar } from "notistack"
+import { setCurrentUser } from '../redux/selectors/users.selector'
+import { stringAcronymize } from '../custom-functions/stringAcronymize'
 
 type TNavbar = {
   logout: () => void,
@@ -17,16 +20,10 @@ const Navbar: React.FC<TNavbar> = ({ logout, userId }) => {
 
   //Get/Edit profile info
   const [isProfileEdit, setProfileEdit] = useState(false)
-  const [user, setUser] = useState<TUser | null>(null)
   const { enqueueSnackbar } = useSnackbar()
   const [newUserData, setNewUserData] = useState<TNewUserData | null>(null)
-  useEffect(() => {
-    if (!!userId) {
-      usersAPI.getUser(userId).then(res => {
-        setUser(res.user)
-      })
-    }
-  }, [userId, newUserData])
+  const user = useSelector(setCurrentUser)
+
   useEffect(() => {
     if (!!newUserData) {
       usersAPI.updateUser(userId, newUserData).then(res => {
@@ -56,7 +53,7 @@ const Navbar: React.FC<TNavbar> = ({ logout, userId }) => {
             <Button
               color="inherit"
               onClick={() => setProfileEdit(true)}
-              startIcon={<Avatar style={{height: '24px', width: '24px'}}>{!user ? "" : user.name === undefined ? user.email : user.name}</Avatar>}
+              startIcon={<Avatar style={{height: '30px', width: '30px'}}>{stringAcronymize(!user ? "" :user.name === undefined ? user.email : user.name)}</Avatar>}
             >
               {!user ? "" :user.name === undefined ? user.email : user.name}
             </Button>
