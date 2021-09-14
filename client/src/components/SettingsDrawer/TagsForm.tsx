@@ -4,6 +4,7 @@ import { Grid, TextField, Button, Typography, ButtonGroup } from '@material-ui/c
 import { TTag, TTagInner } from '../../api/tags.api';
 import { CustomChip } from '../StyledComponents/CustomChip';
 import { AxiosResponse } from 'axios';
+import ColorPicker from '../ColorPicker';
 
 type TTagsForm = {
     getTags: () => Promise<TTag>,
@@ -107,21 +108,7 @@ export const TagsForm: React.FC<TTagsForm> = ({getTags, newTag, deleteTag, tagsL
                         )} />
                 </Grid>
                 <Grid item xs={12}>
-                    <Controller
-                        name="color"
-                        control={control}
-                        defaultValue={""}
-                        render={({ field: { onChange, value }, fieldState: { error } }) => (
-                            <TextField
-                                label="Цвет"
-                                variant="outlined"
-                                size="small"
-                                value={value}
-                                onChange={onChange}
-                                error={!!error}
-                                helperText={error ? error.message : null}
-                                fullWidth={true} />
-                        )} />
+                    <ColorPicker name={"color"} control={control} />
                 </Grid>
                 <Grid item container xs={12} justifyContent="center">
                     <ButtonGroup disabled={disableSubmit}>

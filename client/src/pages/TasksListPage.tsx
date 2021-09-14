@@ -64,7 +64,7 @@ const TasksListPage: React.FC = () => {
     return <Paper variant='outlined' style={{ padding: '8px 16px', margin: '16px' }}>
         {tasks.length === 0 && <Typography align="center">Задач нет</Typography>}
         {tasks.map((value, i) => {
-            return <Accordion variant="outlined" TransitionProps={{unmountOnExit: true}} style={{ margin: '8px 0' }}>
+            return <Accordion key={tasks[i]._id} variant="outlined" TransitionProps={{unmountOnExit: true}} style={{ margin: '8px 0' }}>
             <AccordionSummary
                 component={CardPaper}
                 key={i}
@@ -114,7 +114,7 @@ const TasksListPage: React.FC = () => {
                                 avatar={<Avatar>{tasks[i].executor?.name === undefined ? tasks[i].executor?.email.slice(0, 2) : tasks[i].executor?.name.slice(0, 2)}</Avatar>}
                                 label={tasks[i].executor === null ? 'Нет исполнителя' : tasks[i].executor?.name === undefined ? tasks[i].executor?.email : tasks[i].executor?.name}
                                 onClick={handleClick}
-                                $color={"#9e9e9e"}
+                                $color={!!tasks[i].executor?.color ? tasks[i].executor?.color : "#9e9e9e"}
                             />
                         </Grid>
                         <Grid item xs={4} sm={4} style={{

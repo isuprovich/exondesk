@@ -41,7 +41,7 @@ router.get('/gettasks', [], async (req: Request, res: Response) => {
     try {
         await taskModel
             .find({ isDeleted: false }, { __v: 0 })
-            .populate('executor', ['email', 'name'], undefined, { _id: { $exists: true }})
+            .populate('executor', ['email', 'name', 'color'], undefined, { _id: { $exists: true }})
             .populate('status', ['value', 'label', 'name', 'color'], undefined, { _id: { $exists: true }})
             .populate('priority', ['value', 'label', 'name', 'color'], undefined, { _id: { $exists: true }})
             .exec((error, tasks) => {
@@ -60,7 +60,7 @@ router.get('/:id', async (req: Request, res: Response) => {
         const tasknumber = Number(req.params.id)
         await taskModel
             .findOne({ number: tasknumber })
-            .populate('executor', ['email', 'name'], undefined, { _id: { $exists: true }})
+            .populate('executor', ['email', 'name', 'color'], undefined, { _id: { $exists: true }})
             .populate('status', ['value', 'label', 'name', 'color'], undefined, { _id: { $exists: true }})
             .populate('priority', ['value', 'label', 'name', 'color'], undefined, { _id: { $exists: true }})
             .exec((error, task) => {

@@ -45,7 +45,7 @@ type TTaskPage = {
 const TaskPage: React.FC<TTaskPage> = ({ editMode, isReadOnly }) => {
 
     const history = useHistory()
-    const { handleSubmit, control, reset, watch, formState } = useForm()
+    const { handleSubmit, control, reset, watch } = useForm()
     const { enqueueSnackbar } = useSnackbar()
     const dispatch = useDispatch()
 

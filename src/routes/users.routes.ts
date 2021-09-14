@@ -28,7 +28,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 router.put('/:id', async (req: Request, res: Response) => {
     try {
         await userModel
-            .updateOne({ _id: req.params.id }, {'email': req.body.email, 'name': req.body.name})
+            .updateOne({ _id: req.params.id }, {'email': req.body.email, 'name': req.body.name, 'color': req.body.color})
             .exec((error, user) => {
                 if (error) return res.status(500).json({ message: error })
                 return res.json({ user: user })

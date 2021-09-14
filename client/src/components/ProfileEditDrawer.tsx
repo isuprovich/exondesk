@@ -1,7 +1,8 @@
-import React from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { Divider, Drawer, Grid, TextField, Typography, Button } from '@material-ui/core';
-import { TNewUserData, TUser } from '../api/users.api';
+import React from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { Divider, Drawer, Grid, TextField, Typography, Button } from '@material-ui/core'
+import { TNewUserData, TUser } from '../api/users.api'
+import ColorPicker from './ColorPicker';
 
 type TProfileEditDrawer = {
   isProfileEdit: boolean
@@ -75,6 +76,9 @@ export const ProfileEditDrawer: React.FC<TProfileEditDrawer> = ({ isProfileEdit,
                     helperText={error ? error.message : null}
                     fullWidth={true} />
                 )} />
+            </Grid>
+            <Grid item xs={12}>
+              <ColorPicker name={"color"} control={control} color={user.color} />
             </Grid>
           </Grid>
         </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { AppBar, Toolbar, Typography, Button, ButtonGroup } from '@material-ui/core'
+import { AppBar, Toolbar, Typography, Button, ButtonGroup, Avatar } from '@material-ui/core'
 import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded'
 import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRounded'
 import { ProfileEditDrawer } from './ProfileEditDrawer'
@@ -53,10 +53,13 @@ const Navbar: React.FC<TNavbar> = ({ logout, userId }) => {
           </ButtonGroup>
           <div style={{flexGrow: 1}}></div>
           <ButtonGroup size="small" color="primary" variant="text">
-            <Button color="inherit" onClick={() => setProfileEdit(true)}>{
-              !user ? "" :
-                user.name === undefined ? user.email : user.name
-            }</Button>
+            <Button
+              color="inherit"
+              onClick={() => setProfileEdit(true)}
+              startIcon={<Avatar style={{height: '24px', width: '24px'}}>{!user ? "" : user.name === undefined ? user.email : user.name}</Avatar>}
+            >
+              {!user ? "" :user.name === undefined ? user.email : user.name}
+            </Button>
             <Button color="inherit" onClick={() => logout()}>ВЫХОД</Button>
           </ButtonGroup>
         </Toolbar>

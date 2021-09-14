@@ -4,6 +4,7 @@ interface IUser {
     email: string
     password: string
     name: string
+    color: string
     position: string
     tasks: Array<Schema.Types.ObjectId>
     dateOfRegistration: Date
@@ -14,6 +15,7 @@ const userSchema = new Schema<IUser>({
     password: { type: String, required: true },
     name: { type: String },
     position: { type: String },
+    color: { type: String, default: '#9e9e9e' },
     tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }],
     dateOfRegistration: { type: Date, default: Date.now }
 })

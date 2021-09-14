@@ -8,12 +8,14 @@ export type TUser = {
     _id: string
     email: string
     name: string
+    color: string
 }
 export type TUserArray = [TUser]
 export type TUsers = {users: TUserArray}
 export type TNewUserData = {
     name: string
     email: string
+    color: string
 }
 
 export const usersAPI = {
