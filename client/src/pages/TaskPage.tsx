@@ -14,8 +14,14 @@ import { getTask } from '../redux/reducers/tasks.reducer'
 
 type TControl = {
     description: string
+    isReadOnly?: boolean
 }
-const PreviewComponent: React.FC<TControl> = ({ description }) => {
+const PreviewComponent: React.FC<TControl> = ({ description, isReadOnly }) => {
+    if (isReadOnly) return <>
+        <ReactMarkdown>
+            {description}
+        </ReactMarkdown>
+    </>
     return <>
         <Accordion
             variant="outlined"
@@ -33,12 +39,13 @@ const PreviewComponent: React.FC<TControl> = ({ description }) => {
     </>
 }
 type TTaskPage = {
-    editMode: boolean
+    editMode: boolean,
+    isReadOnly?: boolean
 }
-const TaskPage: React.FC<TTaskPage> = ({ editMode }) => {
+const TaskPage: React.FC<TTaskPage> = ({ editMode, isReadOnly }) => {
 
     const history = useHistory()
-    const { handleSubmit, control, reset, watch } = useForm()
+    const { handleSubmit, control, reset, watch, formState } = useForm()
     const { enqueueSnackbar } = useSnackbar()
     const dispatch = useDispatch()
 
@@ -131,10 +138,10 @@ const TaskPage: React.FC<TTaskPage> = ({ editMode }) => {
                     <Grid container spacing={2} direction="column">
                         <Grid item>
                             <Typography variant="h5">
-                                {isEdit ? `Редактирование задачи MS-${fetchedTask?.number}` : 'Новая задача'}
+                                {isReadOnly ? `MS-${fetchedTask?.number}: ${fetchedTask?.taskname}` : isEdit ? `Редактирование задачи MS-${fetchedTask?.number}` : 'Новая задача'}
                             </Typography>
                         </Grid>
-                        <Grid item>
+                        <Grid item style={isReadOnly ? {display: 'none'} : {}}>
                             <Controller
                                 name="taskname"
                                 control={control}
@@ -154,7 +161,7 @@ const TaskPage: React.FC<TTaskPage> = ({ editMode }) => {
                                 rules={{ required: "Введите наименование задачи" }}
                             />
                         </Grid>
-                        <Grid item>
+                        <Grid item style={isReadOnly ? {display: 'none'} : {}}>
                             <Controller
                                 name="description"
                                 control={control}
@@ -177,16 +184,16 @@ const TaskPage: React.FC<TTaskPage> = ({ editMode }) => {
                             />
                         </Grid>
                         <Grid item>
-                            <PreviewComponent description={previewDescription} />
+                            <PreviewComponent description={previewDescription} isReadOnly={isReadOnly} />
                         </Grid>
                     </Grid>
                 </Paper>
             </Grid>
             <Grid item>
                 <Paper variant='outlined' style={{ padding: '16px', margin: '16px 16px 16px 8px', width: 'fit-content' }}>
-                    <Grid container spacing={2} direction="column">
-                        <Grid item>
-                            <ButtonGroup>
+                    <Grid container spacing={2} direction="column" style={{minWidth: '15vw'}}>
+                        <Grid item style={isReadOnly ? {display: 'none'} : {}}>
+                            <ButtonGroup fullWidth={true}>
                                 <Button type="submit" variant="contained" color="primary">
                                     {!isEdit ? 'Создать' : 'Изменить'}
                                 </Button>
@@ -211,7 +218,7 @@ const TaskPage: React.FC<TTaskPage> = ({ editMode }) => {
                                         fullWidth={true}
                                         size="small"
                                         select
-                                        disabled={isLoadPriorities}
+                                        disabled={isLoadPriorities || isReadOnly}
                                     >
                                         <MenuItem value={""}>Не выбран</MenuItem>
                                         {priorities.map((value, i) => {
@@ -239,7 +246,7 @@ const TaskPage: React.FC<TTaskPage> = ({ editMode }) => {
                                         fullWidth={true}
                                         size="small"
                                         select
-                                        disabled={isLoadStatuses}
+                                        disabled={isLoadStatuses || isReadOnly}
                                     >
                                         <MenuItem value={""}>Не выбран</MenuItem>
                                         {statuses.map((value, i) => {
@@ -267,6 +274,7 @@ const TaskPage: React.FC<TTaskPage> = ({ editMode }) => {
                                         fullWidth={true}
                                         size="small"
                                         select
+                                        disabled={isReadOnly}
                                     >
                                         <MenuItem value={""}>Не выбран</MenuItem>
                                         {sides.map((value, i) => {
@@ -292,7 +300,7 @@ const TaskPage: React.FC<TTaskPage> = ({ editMode }) => {
                                         error={!!error}
                                         helperText={error ? error.message : null}
                                         fullWidth={true}
-                                        disabled={isLoadUsers}
+                                        disabled={isLoadUsers || isReadOnly}
                                         select
                                         size="small"
                                     >

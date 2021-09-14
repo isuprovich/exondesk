@@ -1,15 +1,17 @@
-import { Avatar, Button, ButtonGroup, Grid, Paper, Typography, Dialog, DialogTitle, DialogActions, LinearProgress } from '@material-ui/core'
+import { Avatar, Button, ButtonGroup, Grid, Paper, Typography, Dialog, DialogTitle, DialogActions, LinearProgress, Accordion, AccordionSummary, AccordionDetails, Divider } from '@material-ui/core'
 import { useState, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import styled from 'styled-components'
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined'
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined'
+import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined'
 import { CustomChip } from '../components/StyledComponents/CustomChip'
 import { tasksAPI } from '../api/tasks.api'
 import { Link } from 'react-router-dom'
 import { setTasks } from '../redux/selectors/tasks.selector'
 import { getTasks } from '../redux/reducers/tasks.reducer'
+import ReactMarkdown from 'react-markdown'
 
 export type TChipStyleProps = {
     $color?: string
@@ -62,10 +64,11 @@ const TasksListPage: React.FC = () => {
     return <Paper variant='outlined' style={{ padding: '8px 16px', margin: '16px' }}>
         {tasks.length === 0 && <Typography align="center">Задач нет</Typography>}
         {tasks.map((value, i) => {
-            return <CardPaper
+            return <Accordion variant="outlined" TransitionProps={{unmountOnExit: true}} style={{ margin: '8px 0' }}>
+            <AccordionSummary
+                component={CardPaper}
                 key={i}
                 variant='outlined'
-                style={{ padding: '8px 16px', margin: '8px 0' }}
                 $color={tasks[i].priority === null ? 'grey' : tasks[i].priority?.color}
             >
                 <Grid container alignItems="stretch">
@@ -84,7 +87,8 @@ const TasksListPage: React.FC = () => {
                         </Grid>
                         <Grid item>
                             <ButtonGroup size="small">
-                                <Button component={Link} to={`/task/${tasks[i].number}`} color="primary"><EditOutlinedIcon /></Button>
+                                <Button component={Link} to={`/task/${tasks[i].number}`} color="primary"><VisibilityOutlinedIcon /></Button>
+                                <Button component={Link} to={`/edit/${tasks[i].number}`} color="primary"><EditOutlinedIcon /></Button>
                                 <Button color="secondary" onClick={() => handleOpenDelete(tasks[i].number)}><DeleteOutlinedIcon /></Button>
                             </ButtonGroup>
                         </Grid>
@@ -132,7 +136,13 @@ const TasksListPage: React.FC = () => {
                         </Grid>
                     </Grid>
                 </Grid>
-            </CardPaper>
+            </AccordionSummary>
+            <Divider />
+            <AccordionDetails style={{ display: 'block' }}>
+                <ReactMarkdown>{tasks[i].description}</ReactMarkdown>
+            </AccordionDetails>
+            </Accordion>
+            
         })}
         <Dialog
             open={isDeleteOpen}

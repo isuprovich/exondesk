@@ -37,7 +37,8 @@ const App: React.FC = () => {
           <Route path='/kanban' render={() => <KanbanPage />} />
           <Route path='/tasks' render={() => <TasksListPage />} />
           <Route path='/newtask' render={() => <TaskPage editMode={false} />} />
-          <Route path='/task/:taskId?' render={() => <TaskPage editMode={true} />} />
+          <Route path='/task/:taskId?' render={() => <TaskPage editMode={true} isReadOnly={true} />} />
+          <Route path='/edit/:taskId?' render={() => <TaskPage editMode={true} />} />
           <Route path='/settings' render={() => <SettingsPage />} />
           <Redirect to='/tasks' />
         </Switch>}
