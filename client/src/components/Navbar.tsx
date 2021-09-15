@@ -53,7 +53,13 @@ const Navbar: React.FC<TNavbar> = ({ logout, userId }) => {
             <Button
               color="inherit"
               onClick={() => setProfileEdit(true)}
-              startIcon={<Avatar style={{height: '30px', width: '30px'}}>{stringAcronymize(!user ? "" :user.name === undefined ? user.email : user.name)}</Avatar>}
+              startIcon={<Avatar style={{
+                height: '24px',
+                width: '24px',
+                fontSize: '12px'
+              }}>
+                {stringAcronymize(!user ? "" :user.name === undefined ? user.email : user.name)}
+              </Avatar>}
             >
               {!user ? "" :user.name === undefined ? user.email : user.name}
             </Button>

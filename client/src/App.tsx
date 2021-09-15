@@ -5,14 +5,14 @@ import { SnackbarProvider } from 'notistack';
 import { AuthContext } from './context/AuthContext'
 import { CssBaseline } from '@material-ui/core'
 import Navbar from './components/Navbar'
-import { getStatuses, getPriorities } from './redux/reducers/tags.reducer';
-import { getCurrentUser, getUsers } from './redux/reducers/users.reducer';
+import { getStatuses, getPriorities } from './redux/reducers/tags.reducer'
+import { getCurrentUser, getUsers } from './redux/reducers/users.reducer'
 import { useDispatch } from 'react-redux'
-import LoginPage from './pages/AuthPages';
-import KanbanPage from './pages/KanbanPage';
-import SettingsPage from './pages/SettingsPage';
-import TaskPage from './pages/TaskPage';
-import TasksListPage from './pages/TasksListPage';
+import LoginPage from './pages/AuthPages'
+import KanbanPage from './pages/KanbanPage'
+import SettingsPage from './pages/SettingsPage'
+import TaskPage from './pages/TaskPage'
+import TasksListPage from './pages/TasksListPage'
 
 const App: React.FC = () => {
   const { token, login, logout, userId, ready } = useAuth()
