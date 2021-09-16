@@ -26,8 +26,8 @@ export type TNewTask = {
 }
 
 export const tasksAPI = {
-    getAllTasks() {
-        return api.get<TTasks>('/tasks/gettasks')
+    getAllTasks(filters?: string) {
+        return api.get<TTasks>(!!filters ? `/tasks/gettasks/${filters}` : '/tasks/gettasks')
         .then(res => res.data).then(res => {return res.tasks})
     },
     getTask(task: string) {

@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { useAuth } from './hooks/auth.hook'
 import { SnackbarProvider } from 'notistack';
 import { AuthContext } from './context/AuthContext'
-import { CssBaseline } from '@material-ui/core'
+import { Container, createTheme, CssBaseline, ThemeProvider, Typography } from '@material-ui/core'
 import Navbar from './components/Navbar'
 import { getStatuses, getPriorities } from './redux/reducers/tags.reducer'
 import { getCurrentUser, getUsers } from './redux/reducers/users.reducer'
@@ -23,6 +23,31 @@ const App: React.FC = () => {
   useEffect(() => { dispatch(getPriorities()) }, [dispatch])
   useEffect(() => { if (userId) dispatch(getCurrentUser(userId)) }, [dispatch, userId])
 
+  const theme = createTheme({
+    overrides: {
+      MuiCssBaseline: {
+        '@global': {
+          '.MuiAccordionSummary-content': {
+            margin: 0
+          },
+          '.MuiAccordionSummary-content.Mui-expanded': {
+            margin: 0
+          },
+          '.MuiAccordion-root': {
+            marginBottom: '8px'
+          },
+          '.MuiAccordion-root.Mui-expanded': {
+            margin: '0 0 8px 0'
+          },
+          '.MuiAccordion-root:before': {
+            backgroundColor: 'transparent',
+            opacity: 1
+          }
+        }
+      }
+    }
+  })
+
   if (!ready) {
     return <>
       <CssBaseline />
@@ -32,22 +57,27 @@ const App: React.FC = () => {
   return <>
     <SnackbarProvider>
       <AuthContext.Provider value={{ token, login, logout, userId, isAuth }}>
-        <CssBaseline />
-        {userId !== "" && <Navbar logout={logout} userId={userId} />}
-        {isAuth && <Switch>
-          <Route path='/kanban' render={() => <KanbanPage />} />
-          <Route path='/tasks' render={() => <TasksListPage />} />
-          <Route path='/newtask' render={() => <TaskPage editMode={false} />} />
-          <Route path='/task/:taskId?' render={() => <TaskPage editMode={true} isReadOnly={true} />} />
-          <Route path='/edit/:taskId?' render={() => <TaskPage editMode={true} />} />
-          <Route path='/settings' render={() => <SettingsPage />} />
-          <Redirect to='/tasks' />
-        </Switch>}
-        {!isAuth &&
-          <Switch>
-            <Route path='/auth' exact render={() => <LoginPage />} />
-            <Redirect to='/auth' />
-          </Switch>}
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          {userId !== "" && <Navbar logout={logout} userId={userId} />}
+          <div style={{ margin: "74px 10px 0 10px" }}>
+            {isAuth && <Switch>
+              <Route path='/kanban' render={() => <KanbanPage />} />
+              <Route path='/tasks' render={() => <TasksListPage />} />
+              <Route path='/newtask' render={() => <TaskPage editMode={false} />} />
+              <Route path='/task/:taskId?' render={() => <TaskPage editMode={true} isReadOnly={true} />} />
+              <Route path='/edit/:taskId?' render={() => <TaskPage editMode={true} />} />
+              <Route path='/settings' render={() => <SettingsPage />} />
+              <Redirect to='/tasks' />
+            </Switch>}
+            {!isAuth &&
+              <Switch>
+                <Route path='/auth' exact render={() => <LoginPage />} />
+                <Redirect to='/auth' />
+              </Switch>}
+            <Container style={{ margin: "10px auto" }}><Typography variant="body2" align="center">Exondesk, 2021 (c) Ivan Suprovich</Typography></Container>
+          </div>
+        </ThemeProvider>
       </AuthContext.Provider>
     </SnackbarProvider>
   </>

@@ -126,13 +126,13 @@ const TaskPage: React.FC<TTaskPage> = ({ editMode, isReadOnly }) => {
 
     if (isFetchingTask) return <LinearProgress />
     return <form onSubmit={handleSubmit(createTask)}>
-        <Grid container>
+        <Grid container spacing={1}>
             <Grid item style={{ flexGrow: 1 }}>
                 <Paper
                     variant='outlined'
                     style={{
                         padding: '16px',
-                        margin: '16px 8px 16px 16px', overflow: "auto"
+                        overflow: "auto"
                     }}
                 >
                     <Grid container spacing={2} direction="column">
@@ -190,7 +190,7 @@ const TaskPage: React.FC<TTaskPage> = ({ editMode, isReadOnly }) => {
                 </Paper>
             </Grid>
             <Grid item>
-                <Paper variant='outlined' style={{ padding: '16px', margin: '16px 16px 16px 8px', width: 'fit-content' }}>
+                <Paper variant='outlined' style={{ padding: '16px', width: 'fit-content' }}>
                     <Grid container spacing={2} direction="column" style={{minWidth: '15vw'}}>
                         <Grid item style={isReadOnly ? {display: 'none'} : {}}>
                             <ButtonGroup fullWidth={true}>

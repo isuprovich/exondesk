@@ -22,6 +22,8 @@ router.post('/newtask', [],
         }
     })
 
+// /api/tasks/:id - редактировать задачу
+
 router.post('/:id', [],
     async (req: Request, res: Response) => {
         const tasknumber = Number(req.params.id)
@@ -38,12 +40,16 @@ router.post('/:id', [],
 // /api/tasks/gettasks - получить весь список задач
 
 router.get('/gettasks', [], async (req: Request, res: Response) => {
+    
     try {
+        //@ts-ignore
+        const search: string | undefined = req.query.search
+        console.log(search)
         await taskModel
-            .find({ isDeleted: false }, { __v: 0 })
-            .populate('executor', ['email', 'name', 'color'], undefined, { _id: { $exists: true }})
-            .populate('status', ['value', 'label', 'name', 'color'], undefined, { _id: { $exists: true }})
-            .populate('priority', ['value', 'label', 'name', 'color'], undefined, { _id: { $exists: true }})
+            .find(!!search ? { isDeleted: false, taskname: {"$regex" : search, "$options": "i"} } : { isDeleted: false }, { __v: 0 })
+            .populate('executor', ['email', 'name', 'color'], undefined, { _id: { $exists: true } })
+            .populate('status', ['value', 'label', 'name', 'color'], undefined, { _id: { $exists: true } })
+            .populate('priority', ['value', 'label', 'name', 'color'], undefined, { _id: { $exists: true } })
             .exec((error, tasks) => {
                 if (error) return res.status(500).json({ message: error })
                 return res.json({ tasks: tasks })
@@ -60,9 +66,9 @@ router.get('/:id', async (req: Request, res: Response) => {
         const tasknumber = Number(req.params.id)
         await taskModel
             .findOne({ number: tasknumber })
-            .populate('executor', ['email', 'name', 'color'], undefined, { _id: { $exists: true }})
-            .populate('status', ['value', 'label', 'name', 'color'], undefined, { _id: { $exists: true }})
-            .populate('priority', ['value', 'label', 'name', 'color'], undefined, { _id: { $exists: true }})
+            .populate('executor', ['email', 'name', 'color'], undefined, { _id: { $exists: true } })
+            .populate('status', ['value', 'label', 'name', 'color'], undefined, { _id: { $exists: true } })
+            .populate('priority', ['value', 'label', 'name', 'color'], undefined, { _id: { $exists: true } })
             .exec((error, task) => {
                 if (error) return res.status(500).json({ message: error })
                 return res.json({ task: task })

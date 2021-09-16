@@ -3,7 +3,7 @@ import { ThunkAction } from "redux-thunk"
 import { TAppState, TInferActions } from "../store"
 
 const initialState = {
-    allTasks: null as unknown as TTask[],
+    allTasks: null as unknown as TTask[] | null,
     currentTask: null as TTask | null,
     isCurrentTaskLoad: false as boolean
 }
@@ -35,7 +35,7 @@ const tasksReducer = (state = initialState, action: TTasksActions): TTasksState 
 //ACTION CREATORS
 type TTasksActions = TInferActions<typeof tasksActions>
 export const tasksActions = {
-    setTasks: (tasks: TTask[]) => ({type: 'SET_TASKS', payload: tasks} as const),
+    setTasks: (tasks: TTask[] | null) => ({type: 'SET_TASKS', payload: tasks} as const),
     setLoadTasks: (isTasksLoad: boolean) => ({type: 'SET_LOAD_TASKS', payload: isTasksLoad} as const),
     setTask: (task: TTask) => ({ type: 'SET_TASK', payload: task } as const),
     setLoadTask: (isTaskLoad: boolean) => ({ type: 'SET_LOAD_TASK', payload: isTaskLoad } as const),
@@ -54,8 +54,9 @@ export const getTask = (taskId: string): ThunkType => async (dispatch) => {
         dispatch(tasksActions.setLoadTask(false))
     })
 }
-export const getTasks = (): ThunkType => async (dispatch) => {
-    await tasksAPI.getAllTasks().then(tasks => {
+export const getTasks = (filters?: string): ThunkType => async (dispatch) => {
+    await tasksAPI.getAllTasks(filters).then(tasks => {
+        dispatch(tasksActions.setTasks(null))
         const reverseTasks = tasks.reverse()
         dispatch(tasksActions.setTasks(reverseTasks))
     }, error => {
