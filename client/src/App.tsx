@@ -42,6 +42,16 @@ const App: React.FC = () => {
           '.MuiAccordion-root:before': {
             backgroundColor: 'transparent',
             opacity: 1
+          },
+          '::-webkit-scrollbar': {
+            width: '8px'
+          },
+          '::-webkit-scrollbar-thumb': {
+            backgroundColor: '#d9d9d9',
+            borderRadius: '5px'
+          },
+          '::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: '#9e9e9e'
           }
         }
       }
