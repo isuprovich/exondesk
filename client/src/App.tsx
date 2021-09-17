@@ -28,7 +28,7 @@ const App: React.FC = () => {
       MuiCssBaseline: {
         '@global': {
           '.MuiAccordionSummary-content': {
-            margin: 0
+            margin: '0 !important' //ОЧЕНЬ НУЖНО ИСПРАВИТЬ
           },
           '.MuiAccordionSummary-content.Mui-expanded': {
             margin: 0

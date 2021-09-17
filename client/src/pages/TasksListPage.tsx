@@ -1,4 +1,4 @@
-import { Avatar, Button, ButtonGroup, Grid, Paper, Typography, Dialog, DialogTitle, DialogActions, LinearProgress, Accordion, AccordionSummary, AccordionDetails } from '@material-ui/core'
+import { Avatar, Button, ButtonGroup, Grid, Paper, Typography, Dialog, DialogTitle, DialogActions, LinearProgress, Accordion, AccordionSummary, AccordionDetails, MenuItem, TextField } from '@material-ui/core'
 import { useState, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
@@ -13,8 +13,10 @@ import { getTasks } from '../redux/reducers/tasks.reducer'
 import ReactMarkdown from 'react-markdown'
 import { stringAcronymize } from '../custom-functions/stringAcronymize'
 import { CustomTagButton } from '../components/StyledComponents/CustomTagButton'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import CustomInput from '../components/CustomInput'
+import { setStatuses, setPriorities, setSides, isLoadingStatuses, isLoadingPriorities } from '../redux/selectors/tags.selector'
+import { setUsers, isLoadingUsers } from '../redux/selectors/users.selector'
 
 export type TChipStyleProps = {
     $color?: string
@@ -67,10 +69,21 @@ const TasksListPage: React.FC = () => {
     }, [enqueueSnackbar, dispatch])
     //#endregion DELETE TASK
 
-    //Заглушки действий
+    //#region Заглушки действий
     const handleClick = () => {
         console.info('You clicked the Chip.')
     }
+    //#endregion
+
+    //#region SEARCH TASKS
+
+    const users = useSelector(setUsers)
+    const statuses = useSelector(setStatuses)
+    const priorities = useSelector(setPriorities)
+    const sides = useSelector(setSides)
+    const isLoadUsers = useSelector(isLoadingUsers)
+    const isLoadStatuses = useSelector(isLoadingStatuses)
+    const isLoadPriorities = useSelector(isLoadingPriorities)
 
     const handleSearch = (data: any) => {
         let searchString: string = ""
@@ -78,10 +91,10 @@ const TasksListPage: React.FC = () => {
             if (value) { searchString = searchString + `${key}=${value}&` }
         }
         if (searchString !== "") { searchString = "?" + searchString.substring(0, searchString.length - 1) }
-        console.log(searchString)
         history.push(searchString)
         if (searchString !== "") { dispatch(getTasks(searchString)) }
     }
+    //#endregion
 
     //Рендер
     if (!tasks) return <LinearProgress />
@@ -101,10 +114,114 @@ const TasksListPage: React.FC = () => {
                             />
                         </Grid>
                         <Grid item>
-                            <CustomInput
-                                name={"side"}
-                                label={"Подсистема"}
+                            <Controller
+                                name="priority"
                                 control={control}
+                                defaultValue=""
+                                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                                    <TextField
+                                        label="Приоритет"
+                                        variant="outlined"
+                                        value={value}
+                                        onChange={onChange}
+                                        error={!!error}
+                                        helperText={error ? error.message : null}
+                                        fullWidth={true}
+                                        size="small"
+                                        select
+                                        disabled={isLoadPriorities}
+                                    >
+                                        <MenuItem value={""}>Не выбран</MenuItem>
+                                        {priorities.map((value, i) => {
+                                            return (
+                                                <MenuItem key={i} value={priorities[i]._id}>{priorities[i].label}</MenuItem>
+                                            )
+                                        })}
+                                    </TextField>
+                                )}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <Controller
+                                name="status"
+                                control={control}
+                                defaultValue={''}
+                                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                                    <TextField
+                                        label="Статус"
+                                        variant="outlined"
+                                        value={value}
+                                        onChange={onChange}
+                                        error={!!error}
+                                        helperText={error ? error.message : null}
+                                        fullWidth={true}
+                                        size="small"
+                                        select
+                                        disabled={isLoadStatuses}
+                                    >
+                                        <MenuItem value={""}>Не выбран</MenuItem>
+                                        {statuses.map((value, i) => {
+                                            return (
+                                                <MenuItem key={i} value={statuses[i]._id}>{statuses[i].label}</MenuItem>
+                                            )
+                                        })}
+                                    </TextField>
+                                )}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <Controller
+                                name="side"
+                                control={control}
+                                defaultValue={''}
+                                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                                    <TextField
+                                        label="Подсистема"
+                                        variant="outlined"
+                                        value={value}
+                                        onChange={onChange}
+                                        error={!!error}
+                                        helperText={error ? error.message : null}
+                                        fullWidth={true}
+                                        size="small"
+                                        select
+                                    >
+                                        <MenuItem value={""}>Не выбран</MenuItem>
+                                        {sides.map((value, i) => {
+                                            return (
+                                                <MenuItem key={i} value={sides[i]._id}>{sides[i].label}</MenuItem>
+                                            )
+                                        })}
+                                    </TextField>
+                                )}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <Controller
+                                name="executor"
+                                control={control}
+                                defaultValue={''}
+                                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                                    <TextField
+                                        label="Исполнитель"
+                                        variant="outlined"
+                                        value={value}
+                                        onChange={onChange}
+                                        error={!!error}
+                                        helperText={error ? error.message : null}
+                                        fullWidth={true}
+                                        disabled={isLoadUsers}
+                                        select
+                                        size="small"
+                                    >
+                                        <MenuItem value={""}>Не выбран</MenuItem>
+                                        {users.map((value, i) => {
+                                            return (
+                                                <MenuItem key={i} value={users[i]._id}>{users[i].name === undefined ? users[i].email : users[i].name}</MenuItem>
+                                            )
+                                        })}
+                                    </TextField>
+                                )}
                             />
                         </Grid>
 
