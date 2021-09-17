@@ -40,13 +40,22 @@ router.post('/:id', [],
 // /api/tasks/gettasks - получить весь список задач
 
 router.get('/gettasks', [], async (req: Request, res: Response) => {
-    
+
+    const searchQuery = {}
+    Object.entries(req.query).map(([key, value]) => {
+        const searchObj = {
+            [key]: {
+                "$regex": value,
+                "$options": "i"
+            }
+        }
+        Object.assign(searchQuery, searchObj)
+    })
+    console.log(searchQuery)
+
     try {
-        //@ts-ignore
-        const search: string | undefined = req.query.search
-        console.log(search)
         await taskModel
-            .find(!!search ? { isDeleted: false, taskname: {"$regex" : search, "$options": "i"} } : { isDeleted: false }, { __v: 0 })
+            .find(searchQuery !== undefined ? searchQuery : { isDeleted: false }, { __v: 0 }, {})
             .populate('executor', ['email', 'name', 'color'], undefined, { _id: { $exists: true } })
             .populate('status', ['value', 'label', 'name', 'color'], undefined, { _id: { $exists: true } })
             .populate('priority', ['value', 'label', 'name', 'color'], undefined, { _id: { $exists: true } })
