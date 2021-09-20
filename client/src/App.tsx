@@ -27,22 +27,6 @@ const App: React.FC = () => {
     overrides: {
       MuiCssBaseline: {
         '@global': {
-          '.MuiAccordionSummary-content': {
-            margin: '0 !important' //ОЧЕНЬ НУЖНО ИСПРАВИТЬ
-          },
-          '.MuiAccordionSummary-content.Mui-expanded': {
-            margin: 0
-          },
-          '.MuiAccordion-root': {
-            marginBottom: '8px'
-          },
-          '.MuiAccordion-root.Mui-expanded': {
-            margin: '0 0 8px 0'
-          },
-          '.MuiAccordion-root:before': {
-            backgroundColor: 'transparent',
-            opacity: 1
-          },
           '::-webkit-scrollbar': {
             width: '8px'
           },

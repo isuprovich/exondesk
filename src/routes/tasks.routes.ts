@@ -59,7 +59,7 @@ router.get('/gettasks', [], async (req: Request, res: Response) => {
             .populate('executor', ['email', 'name', 'color'], undefined, { _id: { $exists: true } })
             .populate('status', ['value', 'label', 'name', 'color'], undefined, { _id: { $exists: true } })
             .populate('priority', ['value', 'label', 'name', 'color'], undefined, { _id: { $exists: true } })
-            .sort('dateOfUpdate dateOfCreation')
+            // .sort('dateOfUpdate dateOfCreation')
             .exec((error, tasks) => {
                 if (error) return res.status(500).json({ message: error })
                 return res.json({ tasks: tasks })

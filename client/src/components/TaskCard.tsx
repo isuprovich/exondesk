@@ -1,103 +1,121 @@
-import React from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
-import Avatar from '@material-ui/core/Avatar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import { red } from '@material-ui/core/colors';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Paper, Grid, ButtonGroup, Button, Collapse, Avatar, Typography } from '@material-ui/core'
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
+import clsx from 'clsx'
+import ReactMarkdown from 'react-markdown'
+import { TTask } from '../api/tasks.api'
+import { stringAcronymize } from '../custom-functions/stringAcronymize'
+import { CustomTagButton } from './StyledComponents/CustomTagButton'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined'
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined'
+import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     expand: {
       transform: 'rotate(0deg)',
-      marginLeft: 'auto',
       transition: theme.transitions.create('transform', {
-        duration: theme.transitions.duration.shortest,
+        duration: theme.transitions.duration.shortest
       }),
     },
     expandOpen: {
       transform: 'rotate(180deg)',
-    },
-    avatar: {
-      backgroundColor: red[500],
-    },
-  }),
-);
+    }
+  })
+)
 
-export default function TaskCard() {
-  const classes = useStyles();
-  const [expanded, setExpanded] = React.useState(false);
-
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
-
-  return (
-    <Card variant="outlined">
-      <CardHeader
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title="MS-1"
-        subheader="Описание задачи"
-      />
-      <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton>
-        <IconButton
-          className={clsx(classes.expand, {
-            [classes.expandOpen]: expanded,
-          })}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <ExpandMoreIcon />
-        </IconButton>
-      </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          <Typography paragraph>Method:</Typography>
-          <Typography paragraph>
-            Heat 1/2 cup of the broth in a pot until simmering, add saffron and set aside for 10
-            minutes.
-          </Typography>
-          <Typography paragraph>
-            Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over medium-high
-            heat. Add chicken, shrimp and chorizo, and cook, stirring occasionally until lightly
-            browned, 6 to 8 minutes. Transfer shrimp to a large plate and set aside, leaving chicken
-            and chorizo in the pan. Add pimentón, bay leaves, garlic, tomatoes, onion, salt and
-            pepper, and cook, stirring often until thickened and fragrant, about 10 minutes. Add
-            saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
-          </Typography>
-          <Typography paragraph>
-            Add rice and stir very gently to distribute. Top with artichokes and peppers, and cook
-            without stirring, until most of the liquid is absorbed, 15 to 18 minutes. Reduce heat to
-            medium-low, add reserved shrimp and mussels, tucking them down into the rice, and cook
-            again without stirring, until mussels have opened and rice is just tender, 5 to 7
-            minutes more. (Discard any mussels that don’t open.)
-          </Typography>
-          <Typography>
-            Set aside off of the heat to let rest for 10 minutes, and then serve.
-          </Typography>
-        </CardContent>
-      </Collapse>
-    </Card>
-  );
+interface ITaskCard {
+  task: TTask
+  handleOpenDelete: any
+  handleClick: any
 }
+const TaskCard: React.FC<ITaskCard> = ({ task, handleOpenDelete, handleClick }) => {
+  const classes = useStyles();
+  const [expanded, setExpanded] = useState(false)
+  return <Paper variant="outlined" style={{ marginBottom: '8px' }}>
+      <Grid container alignItems="stretch">
+          <Grid item container xs={12} sm={12} alignItems="stretch">
+              <Grid item style={{ padding: "4px 5px" }}>
+                  <Typography>
+                      <strong>MS-{task.number}</strong>
+                  </Typography>
+              </Grid>
+              <Grid item style={{ display: 'flex', flexDirection: "row", flexGrow: 1, padding: "4px 5px" }}>
+                  <Typography>
+                      {task.taskname}
+                  </Typography>
+              </Grid>
+              <Grid item>
+                  <ButtonGroup size="small" variant="text">
+                      <Button component={Link} to={`/task/${task.number}`} color="primary"><VisibilityOutlinedIcon /></Button>
+                      <Button color="secondary" onClick={(event) => { handleOpenDelete(task.number, event) }}><DeleteOutlinedIcon /></Button>
+                      <Button component={Link} to={`/edit/${task.number}`} color="primary"><EditOutlinedIcon /></Button>
+                      <Button disabled={!task.description} onClick={() => setExpanded(!expanded)} color="primary">
+                        <ExpandMoreIcon 
+                          className={clsx(classes.expand, {[classes.expandOpen]: expanded})}
+                        />
+                      </Button>
+                  </ButtonGroup>
+              </Grid>
+          </Grid>
+          <Grid item xs={12} sm={12} container>
+              <Grid item xs={8} sm={8}>
+                  <ButtonGroup size="small" variant="text">
+                      <CustomTagButton
+                          onClick={() => { handleClick() }}
+                          color={task.priority?.color ? task.priority?.color : '#9e9e9e'}
+                          label={task.priority?.label ? task.priority?.label : 'Нет приоритета'}
+                      />
+                      <CustomTagButton
+                          onClick={() => { handleClick() }}
+                          color={task.status?.color ? task.status?.color : '#9e9e9e'}
+                          label={task.status?.label ? task.status?.label : 'Нет статуса'}
+                      />
+                      <CustomTagButton
+                          label={task.side === '' ? 'Нет подсистемы' : task.side === 'front' ? 'Front' : 'Back'}
+                          color={task.side === '' ? '#9e9e9e' : task.side === 'front' ? '#0097a7' : '#ffa000'}
+                          onClick={() => { handleClick() }}
+                      />
+                      <CustomTagButton
+                          avatar={<Avatar style={{
+                              height: '24px',
+                              width: '24px',
+                              fontSize: '12px'
+                          }}>
+                              {stringAcronymize(task.executor?.name === undefined ? task.executor?.email : task.executor?.name)}
+                          </Avatar>}
+                          label={task.executor === null ? 'Нет исполнителя' : task.executor?.name === undefined ? task.executor?.email : task.executor?.name}
+                          color={!!task.executor?.color ? task.executor?.color : "#9e9e9e"}
+                          onClick={() => { handleClick() }}
+                      />
+                  </ButtonGroup>
+              </Grid>
+              <Grid item xs={4} sm={4} style={{
+                  textAlign: 'end',
+                  display: 'flex',
+                  justifyContent: 'end',
+                  alignContent: 'center',
+                  flexDirection: 'column',
+                  padding: "4px 5px"
+              }}
+              >
+                  {task.dateOfUpdate === null ? 'Создана: ' : 'Обновлена: '}
+                  {new Date(task.dateOfUpdate === null ? task.dateOfCreation : task.dateOfUpdate).toLocaleTimeString('ru-RU', {
+                      day: "numeric",
+                      month: "numeric",
+                      year: "numeric",
+                      hour: "numeric",
+                      minute: "numeric"
+                  })}
+              </Grid>
+          </Grid>
+      </Grid>
+      <Collapse in={expanded} unmountOnExit>
+          <Paper variant="outlined" style={{ margin: '8px', padding: '8px' }}><ReactMarkdown>{task.description}</ReactMarkdown></Paper>
+      </Collapse>
+  </Paper>
+}
+
+export default TaskCard
