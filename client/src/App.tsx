@@ -54,22 +54,24 @@ const App: React.FC = () => {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           {userId !== "" && <Navbar logout={logout} userId={userId} />}
-          <div style={{ margin: "74px 10px 0 10px" }}>
-            {isAuth && <Switch>
-              <Route path='/kanban' render={() => <KanbanPage />} />
-              <Route path='/tasks' render={() => <TasksListPage />} />
-              <Route path='/newtask' render={() => <TaskPage editMode={false} />} />
-              <Route path='/task/:taskId?' render={() => <TaskPage editMode={true} isReadOnly={true} />} />
-              <Route path='/edit/:taskId?' render={() => <TaskPage editMode={true} />} />
-              <Route path='/settings' render={() => <SettingsPage />} />
-              <Redirect to='/tasks' />
-            </Switch>}
-            {!isAuth &&
-              <Switch>
-                <Route path='/auth' exact render={() => <LoginPage />} />
-                <Redirect to='/auth' />
+          <div style={{ height: '100vh', overflow: 'hidden', padding: '64px 0 0 0' }}>
+            <div style={{ height: '97%' }}>
+              {isAuth && <Switch>
+                <Route path='/kanban' render={() => <KanbanPage />} />
+                <Route path='/tasks' render={() => <TasksListPage />} />
+                <Route path='/newtask' render={() => <TaskPage editMode={false} />} />
+                <Route path='/task/:taskId?' render={() => <TaskPage editMode={true} isReadOnly={true} />} />
+                <Route path='/edit/:taskId?' render={() => <TaskPage editMode={true} />} />
+                <Route path='/settings' render={() => <SettingsPage />} />
+                <Redirect to='/tasks' />
               </Switch>}
-            <Container style={{ margin: "10px auto" }}><Typography variant="body2" align="center">Exondesk, 2021 (c) Ivan Suprovich</Typography></Container>
+              {!isAuth &&
+                <Switch>
+                  <Route path='/auth' exact render={() => <LoginPage />} />
+                  <Redirect to='/auth' />
+                </Switch>}
+            </div>
+            <Container><Typography variant="body2" align="center">Exondesk, 2021 (c) Ivan Suprovich</Typography></Container>
           </div>
         </ThemeProvider>
       </AuthContext.Provider>

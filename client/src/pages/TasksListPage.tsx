@@ -11,10 +11,16 @@ import CustomInput from '../components/CustomInput'
 import { setStatuses, setPriorities, setSides, isLoadingStatuses, isLoadingPriorities } from '../redux/selectors/tags.selector'
 import { setUsers, isLoadingUsers } from '../redux/selectors/users.selector'
 import TaskCard from '../components/TaskCard'
+import styled from 'styled-components'
 
 export type TChipStyleProps = {
     $color?: string
 }
+const CustomPaper = styled(Paper)`
+    && ::last-child {
+        margin-bottom: 0;
+    }
+`
 
 const TasksListPage: React.FC = () => {
     const history = useHistory()
@@ -84,8 +90,8 @@ const TasksListPage: React.FC = () => {
 
     //Рендер
     if (!tasks) return <LinearProgress />
-    return <div>
-        <Grid container direction="row" spacing={1}>
+    return <>
+        <Grid container direction="row" spacing={1} style={{ height: '100%', padding: '8px' }}>
             <Grid item>
                 <Paper variant="outlined" style={{ height: 'fit-content', padding: '8px' }}>
                     <form onSubmit={handleSubmit(handleSearch)}>
@@ -213,12 +219,14 @@ const TasksListPage: React.FC = () => {
                     </form>
                 </Paper>
             </Grid>
-            <Grid item style={{ flexGrow: 1 }}>
-                <Paper variant="outlined" style={{ height: '800px', padding: '8px', overflow: 'auto' }}>
-                    {tasks.length === 0 && <Typography align="center">Задач нет</Typography>}
-                    {tasks.map(task => {
-                        return <TaskCard task={task} handleOpenDelete={handleOpenDelete} handleClick={handleClick} />
-                    })}
+            <Grid item style={{ flexGrow: 1, height: '100%' }}>
+                <Paper variant="outlined" style={{ padding: '8px', overflow: 'auto', height: '100%' }}>
+                    <Grid container direction="column" spacing={1}>
+                        {tasks.length === 0 && <Typography align="center">Задач нет</Typography>}
+                        {tasks.map(task => {
+                            return <Grid item><TaskCard task={task} handleOpenDelete={handleOpenDelete} handleClick={handleClick} /></Grid>
+                        })}
+                    </Grid>
                 </Paper>
             </Grid>
         </Grid>
@@ -234,7 +242,7 @@ const TasksListPage: React.FC = () => {
                 </Button>
             </DialogActions>
         </Dialog>
-    </div>
+    </>
 }
 
 export default TasksListPage

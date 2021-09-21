@@ -39,7 +39,7 @@ const Navbar: React.FC<TNavbar> = ({ logout, userId }) => {
 
   return (
     <div>
-      <AppBar position="fixed">
+      <AppBar>
         <Toolbar>
           <Typography className={s.logo}>Exondesk</Typography>
           <ButtonGroup size="small" color="primary" variant="text">

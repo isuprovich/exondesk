@@ -34,7 +34,7 @@ interface ITaskCard {
 const TaskCard: React.FC<ITaskCard> = ({ task, handleOpenDelete, handleClick }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false)
-  return <Paper variant="outlined" style={{ marginBottom: '8px' }}>
+  return <Paper variant="outlined">
       <Grid container alignItems="stretch">
           <Grid item container xs={12} sm={12} alignItems="stretch">
               <Grid item style={{ padding: "4px 5px" }}>
