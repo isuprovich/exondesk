@@ -15,18 +15,22 @@ export const SettingsEditDrawer: React.FC<TSettingsEditDrawer> = ({ isSettingsEd
   >
     <div style={{
       overflowX: "hidden",
-      height: '100%'
+      height: '100%',
+      padding: '0 8px'
     }}>
       <div style={{ display: 'flex', height: '99%', flexDirection: 'column', justifyContent: 'space-between' }}>
         <div>
           <Typography variant="h6" align="center" style={{ padding: "10px" }}>
             Редактирование тэгов
           </Typography>
-          <Divider />
-          <TagsForm getTags={tagsAPI.getPriorities} newTag={tagsAPI.newPriority} deleteTag={tagsAPI.deletePriority} tagsLabel="Приоритеты" />
-          <Divider />
-          <TagsForm getTags={tagsAPI.getStatuses} newTag={tagsAPI.newStatus} deleteTag={tagsAPI.deleteStatus} tagsLabel="Статусы" />
-          
+          <Grid container spacing={1} direction="column">
+            <Grid item>
+              <TagsForm getTags={tagsAPI.getPriorities} newTag={tagsAPI.newPriority} deleteTag={tagsAPI.deletePriority} tagsLabel="Приоритеты" />
+            </Grid>
+            <Grid item>
+              <TagsForm getTags={tagsAPI.getStatuses} newTag={tagsAPI.newStatus} deleteTag={tagsAPI.deleteStatus} tagsLabel="Статусы" />
+            </Grid>
+          </Grid>
         </div>
         <div>
           <Divider />
