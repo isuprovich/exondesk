@@ -125,7 +125,7 @@ const TaskPage: React.FC<TTaskPage> = ({ editMode, isReadOnly }) => {
     //#endregion NEW TASK
 
     if (isFetchingTask) return <LinearProgress />
-    return <form onSubmit={handleSubmit(createTask)}>
+    return <form style={{padding: '8px'}} onSubmit={handleSubmit(createTask)}>
         <Grid container spacing={1}>
             <Grid item style={{ flexGrow: 1 }}>
                 <Paper
