@@ -1,8 +1,10 @@
 import React from 'react'
-import { Controller, useForm } from 'react-hook-form'
-import { Divider, Drawer, Grid, TextField, Typography, Button } from '@material-ui/core'
+import { useForm } from 'react-hook-form'
+import { Divider, Drawer, Grid, TextField, Typography, Button, Avatar, ButtonGroup } from '@material-ui/core'
 import { TNewUserData, TUser } from '../api/users.api'
 import ColorPicker from './ColorPicker';
+import CustomInput from './CustomInput';
+import { stringAcronymize } from '../custom-functions/stringAcronymize';
 
 type TProfileEditDrawer = {
   isProfileEdit: boolean
@@ -12,7 +14,8 @@ type TProfileEditDrawer = {
 };
 export const ProfileEditDrawer: React.FC<TProfileEditDrawer> = ({ isProfileEdit, setProfileEdit, user, setNewUserData }) => {
 
-  const { handleSubmit, control } = useForm();
+  const { handleSubmit, control } = useForm()
+
   const saveEdit = (data: TNewUserData) => {
     setNewUserData(data)
   }
@@ -26,14 +29,26 @@ export const ProfileEditDrawer: React.FC<TProfileEditDrawer> = ({ isProfileEdit,
       overflow: "hidden",
       height: '100%'
     }}>
-      <div style={{display: 'flex', height: '100%', flexDirection: 'column', justifyContent: 'space-between'}}>
+      <div style={{ display: 'flex', height: '100%', flexDirection: 'column', justifyContent: 'space-between' }}>
         <div>
-          <Typography variant="h6" align="center" style={{ padding: "10px" }}>
+          <Typography variant="h6" align="center" style={{ padding: "16px" }}>
             Редактирование профиля
           </Typography>
           <Divider />
           <Grid container direction="column" spacing={2} style={{ padding: '16px' }}>
-            <Grid item xs={12}>
+            <Grid item>
+              <Avatar
+                style={{
+                  height: '100px',
+                  width: '100px',
+                  fontSize: '40px',
+                  margin: '0 auto'
+                }}
+              >
+                {stringAcronymize(user.name === undefined ? user.email : user.name)}
+              </Avatar>
+            </Grid>
+            <Grid item>
               <TextField
                 label="ID пользователя"
                 variant="outlined"
@@ -43,59 +58,37 @@ export const ProfileEditDrawer: React.FC<TProfileEditDrawer> = ({ isProfileEdit,
                 fullWidth={true}
               />
             </Grid>
-            <Grid item xs={12}>
-              <Controller
-                name="name"
+            <Grid item>
+              <CustomInput
+                name={"name"}
+                label={"Имя пользователя"}
                 control={control}
                 defaultValue={user.name}
-                render={({ field: { onChange, value }, fieldState: { error } }) => (
-                  <TextField
-                    label="Имя пользователя"
-                    variant="outlined"
-                    size="small"
-                    value={value}
-                    onChange={onChange}
-                    error={!!error}
-                    helperText={error ? error.message : null}
-                    fullWidth={true} />
-                )} />
+              />
             </Grid>
-            <Grid item xs={12}>
-              <Controller
-                name="email"
+            <Grid item>
+              <CustomInput
+                name={"email"}
+                label={"E-Mail (логин)"}
                 control={control}
                 defaultValue={user.email}
-                render={({ field: { onChange, value }, fieldState: { error } }) => (
-                  <TextField
-                    label="E-Mail (логин)"
-                    variant="outlined"
-                    size="small"
-                    value={value}
-                    onChange={onChange}
-                    error={!!error}
-                    helperText={error ? error.message : null}
-                    fullWidth={true} />
-                )} />
+              />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item>
               <ColorPicker name={"color"} control={control} color={user.color} />
             </Grid>
           </Grid>
         </div>
         <div>
           <Divider />
-          <Grid container spacing={2} style={{ padding: '16px' }}>
-            <Grid item>
-              <Button type="submit" variant="contained" color="primary">
-                Сохранить изменения
-              </Button>
-            </Grid>
-            <Grid item>
-              <Button variant="contained" color="secondary" onClick={() => setProfileEdit(false)}>
-                Отмена
-              </Button>
-            </Grid>
-          </Grid>
+          <ButtonGroup fullWidth style={{ padding: '16px' }}>
+            <Button variant="contained" color="secondary" onClick={() => setProfileEdit(false)}>
+              Отмена
+            </Button>
+            <Button type="submit" variant="contained" color="primary">
+              Сохранить
+            </Button>
+          </ButtonGroup>
         </div>
       </div>
     </form>

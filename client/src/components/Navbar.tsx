@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { AppBar, Toolbar, Typography, Button, ButtonGroup, Avatar } from '@material-ui/core'
 import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded'
@@ -11,6 +11,7 @@ import { TNewUserData, usersAPI } from '../api/users.api'
 import { useSnackbar } from "notistack"
 import { setCurrentUser } from '../redux/selectors/users.selector'
 import { stringAcronymize } from '../custom-functions/stringAcronymize'
+import { getCurrentUser } from '../redux/reducers/users.reducer'
 
 type TNavbar = {
   logout: () => void,
@@ -23,6 +24,7 @@ const Navbar: React.FC<TNavbar> = ({ logout, userId }) => {
   const { enqueueSnackbar } = useSnackbar()
   const [newUserData, setNewUserData] = useState<TNewUserData | null>(null)
   const user = useSelector(setCurrentUser)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (!!newUserData) {
@@ -30,9 +32,10 @@ const Navbar: React.FC<TNavbar> = ({ logout, userId }) => {
         setProfileEdit(false)
         enqueueSnackbar('Данные успешно обновлены', { variant: 'success' })
         setNewUserData(null)
+        if (res.status === 200) { dispatch(getCurrentUser(userId)) }
       })
     }
-  }, [newUserData, enqueueSnackbar, userId])
+  }, [newUserData, enqueueSnackbar, userId, dispatch])
 
   //Get/Edit settings
   const [isSettingsEdit, setSettingsEdit] = useState(false)
@@ -48,7 +51,7 @@ const Navbar: React.FC<TNavbar> = ({ logout, userId }) => {
             <Button component={Link} to='/tasks' color="inherit">Список задач</Button>
             <Button component={Link} to='/kanban' color="inherit">Доска</Button>
           </ButtonGroup>
-          <div style={{flexGrow: 1}}></div>
+          <div style={{ flexGrow: 1 }}></div>
           <ButtonGroup size="small" color="primary" variant="text">
             <Button
               color="inherit"
@@ -58,10 +61,10 @@ const Navbar: React.FC<TNavbar> = ({ logout, userId }) => {
                 width: '24px',
                 fontSize: '12px'
               }}>
-                {stringAcronymize(!user ? "" :user.name === undefined ? user.email : user.name)}
+                {stringAcronymize(!user ? "" : user.name === undefined ? user.email : user.name)}
               </Avatar>}
             >
-              {!user ? "" :user.name === undefined ? user.email : user.name}
+              {!user ? "" : user.name === undefined ? user.email : user.name}
             </Button>
             <Button color="inherit" onClick={() => logout()}>ВЫХОД</Button>
           </ButtonGroup>

@@ -1,26 +1,16 @@
-import { Button, Grid, Paper, Typography, Dialog, DialogTitle, DialogActions, LinearProgress, MenuItem, TextField } from '@material-ui/core'
 import { useState, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+import { Controller, useForm } from 'react-hook-form'
 import { useSnackbar } from 'notistack'
 import { tasksAPI } from '../api/tasks.api'
-import { useHistory } from 'react-router-dom'
 import { setTasks } from '../redux/selectors/tasks.selector'
 import { getTasks } from '../redux/reducers/tasks.reducer'
-import { Controller, useForm } from 'react-hook-form'
-import CustomInput from '../components/CustomInput'
 import { setStatuses, setPriorities, setSides, isLoadingStatuses, isLoadingPriorities } from '../redux/selectors/tags.selector'
 import { setUsers, isLoadingUsers } from '../redux/selectors/users.selector'
+import { Button, Grid, Paper, Typography, Dialog, DialogTitle, DialogActions, LinearProgress, MenuItem, TextField } from '@material-ui/core'
+import CustomInput from '../components/CustomInput'
 import TaskCard from '../components/TaskCard'
-import styled from 'styled-components'
-
-export type TChipStyleProps = {
-    $color?: string
-}
-const CustomPaper = styled(Paper)`
-    && ::last-child {
-        margin-bottom: 0;
-    }
-`
 
 const TasksListPage: React.FC = () => {
     const history = useHistory()
@@ -224,7 +214,7 @@ const TasksListPage: React.FC = () => {
                     <Grid container direction="column" spacing={1}>
                         {tasks.length === 0 && <Typography align="center">Задач нет</Typography>}
                         {tasks.map(task => {
-                            return <Grid item><TaskCard task={task} handleOpenDelete={handleOpenDelete} handleClick={handleClick} /></Grid>
+                            return <Grid item key={task._id}><TaskCard task={task} handleOpenDelete={handleOpenDelete} handleClick={handleClick} /></Grid>
                         })}
                     </Grid>
                 </Paper>

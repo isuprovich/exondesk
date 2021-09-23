@@ -28,8 +28,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface ITaskCard {
   task: TTask
-  handleOpenDelete: any
-  handleClick: any
+  handleOpenDelete?: any
+  handleClick?: any
 }
 const TaskCard: React.FC<ITaskCard> = ({ task, handleOpenDelete, handleClick }) => {
   const classes = useStyles();

@@ -28,7 +28,8 @@ const App: React.FC = () => {
       MuiCssBaseline: {
         '@global': {
           '::-webkit-scrollbar': {
-            width: '8px'
+            width: '8px',
+            height: '8px'
           },
           '::-webkit-scrollbar-thumb': {
             backgroundColor: '#d9d9d9',

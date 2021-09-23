@@ -1,13 +1,15 @@
 import { Button, Container, Typography } from "@material-ui/core"
 import { Droppable } from "react-beautiful-dnd"
 import styled from "styled-components"
-import { TTask, TColumn, IUsers } from "../legacydata/initData"
-import Task from "./Task"
+import { TTagInner } from "../api/tags.api"
+import { setTasks } from "../redux/selectors/tasks.selector"
+import { useSelector } from "react-redux"
+import KanbanTask from "./KanbanTask"
+import { TTask } from "../api/tasks.api"
 
 type TColumnProps = {
-    column: TColumn,
-    tasks: Array<TTask>,
-    users: IUsers
+    column: TTagInner,
+    tasks: TTask[]
 }
 
 type TIsDraggingOver = {
@@ -20,18 +22,21 @@ const ColumnContainer = styled(Container) <TIsDraggingOver>`
     height: calc(100% - 36px);
 `
 
-const Column: React.FC<TColumnProps> = ({ column, tasks, users }) => {
+const KanbanColumn: React.FC<TColumnProps> = ({ column, tasks }) => {
+
+    if (!column) return <div>NOTHING TO SHOW</div>
     return (
         <div style={{
             height: '100%',
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center'
+            alignItems: 'center',
+            maxWidth: '500px'
         }}>
             <Container>
-                <Typography variant="h6" component="h6" align="center">{column.title}</Typography>
+                <Typography variant="h6" component="h6" align="center">{column.label}</Typography>
             </Container>
-            <Droppable droppableId={column.id}>
+            <Droppable droppableId={column._id}>
                 {(provided, snapshot) => (
                     <ColumnContainer
                         {...provided.droppableProps}
@@ -39,11 +44,17 @@ const Column: React.FC<TColumnProps> = ({ column, tasks, users }) => {
                         $isDraggingOver={snapshot.isDraggingOver}
                         style={{ padding: '5px', borderRadius: '2px' }}
                     >
-                        {tasks.map((task, index) => {
-                            const executor = users[task.taskExecutor]
-                            return (
-                                <Task key={task.id} task={task} index={index} executor={executor} />
-                            )
+                        {tasks?.map((task, index) => {
+                            if (task.status?._id === column._id) {
+                                return (
+                                    <KanbanTask key={task._id} task={task} index={index} />
+                                )
+                            }
+                            if (task.status === null && column._id === "1") {
+                                return (
+                                    <KanbanTask key={task._id} task={task} index={index} />
+                                )
+                            }
                         })}
                         {provided.placeholder}
                         <Button variant='outlined' style={{ display: 'block', margin: '0 auto' }}>+</Button>
@@ -54,4 +65,4 @@ const Column: React.FC<TColumnProps> = ({ column, tasks, users }) => {
     )
 }
 
-export default Column
+export default KanbanColumn

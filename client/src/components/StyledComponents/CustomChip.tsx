@@ -1,6 +1,9 @@
 import { Chip } from '@material-ui/core';
 import styled from 'styled-components';
-import { TChipStyleProps } from '../../pages/TasksListPage';
+
+type TChipStyleProps = {
+    $color?: string
+}
 
 export const CustomChip = styled(Chip) <TChipStyleProps> `
     margin-right: 8px;
