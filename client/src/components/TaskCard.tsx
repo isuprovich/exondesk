@@ -30,8 +30,9 @@ interface ITaskCard {
   task: TTask
   handleOpenDelete?: any
   handleClick?: any
+  kanban?: boolean
 }
-const TaskCard: React.FC<ITaskCard> = ({ task, handleOpenDelete, handleClick }) => {
+const TaskCard: React.FC<ITaskCard> = ({ task, handleOpenDelete, handleClick, kanban }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false)
   return <Paper variant="outlined">
@@ -68,11 +69,11 @@ const TaskCard: React.FC<ITaskCard> = ({ task, handleOpenDelete, handleClick }) 
                           color={task.priority?.color ? task.priority?.color : '#9e9e9e'}
                           label={task.priority?.label ? task.priority?.label : 'Нет приоритета'}
                       />
-                      <CustomTagButton
+                      {!kanban && <CustomTagButton
                           onClick={() => { handleClick() }}
                           color={task.status?.color ? task.status?.color : '#9e9e9e'}
                           label={task.status?.label ? task.status?.label : 'Нет статуса'}
-                      />
+                      />}
                       <CustomTagButton
                           label={task.side === '' ? 'Нет подсистемы' : task.side === 'front' ? 'Front' : 'Back'}
                           color={task.side === '' ? '#9e9e9e' : task.side === 'front' ? '#0097a7' : '#ffa000'}
@@ -92,13 +93,14 @@ const TaskCard: React.FC<ITaskCard> = ({ task, handleOpenDelete, handleClick }) 
                       />
                   </ButtonGroup>
               </Grid>
-              <Grid item xs={4} sm={4} style={{
+              {!kanban && <Grid item xs={4} sm={4} style={{
                   textAlign: 'end',
                   display: 'flex',
                   justifyContent: 'end',
                   alignContent: 'center',
                   flexDirection: 'column',
-                  padding: "4px 5px"
+                  padding: "4px 5px",
+                  whiteSpace: "nowrap"
               }}
               >
                   {task.dateOfUpdate === null ? 'Создана: ' : 'Обновлена: '}
@@ -109,7 +111,7 @@ const TaskCard: React.FC<ITaskCard> = ({ task, handleOpenDelete, handleClick }) 
                       hour: "numeric",
                       minute: "numeric"
                   })}
-              </Grid>
+              </Grid>}
           </Grid>
       </Grid>
       <Collapse in={expanded} unmountOnExit>

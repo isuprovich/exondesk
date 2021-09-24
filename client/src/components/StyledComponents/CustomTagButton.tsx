@@ -9,6 +9,7 @@ const CustomTagButtonStyled = styled(Button) <ICustomTagButtonStyled> `
     border-bottom: 4px solid ${props => props.$color === undefined ? "grey" : props.$color};
     border-radius: 0;
     text-transform: none;
+    white-space: nowrap;
 `;
 
 interface ICustomTagButton {

@@ -7,12 +7,13 @@ import { Container, createTheme, CssBaseline, ThemeProvider, Typography } from '
 import Navbar from './components/Navbar'
 import { getStatuses, getPriorities } from './redux/reducers/tags.reducer'
 import { getCurrentUser, getUsers } from './redux/reducers/users.reducer'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import LoginPage from './pages/AuthPages'
 import KanbanPage from './pages/KanbanPage'
 import SettingsPage from './pages/SettingsPage'
 import TaskPage from './pages/TaskPage'
 import TasksListPage from './pages/TasksListPage'
+import { setCurrentUser } from './redux/selectors/users.selector';
 
 const App: React.FC = () => {
   const { token, login, logout, userId, ready } = useAuth()
@@ -22,8 +23,34 @@ const App: React.FC = () => {
   useEffect(() => { dispatch(getStatuses()) }, [dispatch])
   useEffect(() => { dispatch(getPriorities()) }, [dispatch])
   useEffect(() => { if (userId) dispatch(getCurrentUser(userId)) }, [dispatch, userId])
+  const user = useSelector(setCurrentUser)
 
   const theme = createTheme({
+    palette: {
+      type: "light"
+    },
+    overrides: {
+      MuiCssBaseline: {
+        '@global': {
+          '::-webkit-scrollbar': {
+            width: '8px',
+            height: '8px'
+          },
+          '::-webkit-scrollbar-thumb': {
+            backgroundColor: '#d9d9d9',
+            borderRadius: '5px'
+          },
+          '::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: '#9e9e9e'
+          }
+        }
+      }
+    }
+  })
+  const darkTheme = createTheme({
+    palette: {
+      type: "dark"
+    },
     overrides: {
       MuiCssBaseline: {
         '@global': {
@@ -52,7 +79,7 @@ const App: React.FC = () => {
   return <>
     <SnackbarProvider>
       <AuthContext.Provider value={{ token, login, logout, userId, isAuth }}>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={user?.theme ? darkTheme : theme}>
           <CssBaseline />
           {userId !== "" && <Navbar logout={logout} userId={userId} />}
           <div style={{ height: '100vh', overflow: 'hidden', padding: '64px 0 0 0' }}>

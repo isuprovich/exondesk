@@ -8,6 +8,7 @@ interface IUser {
     position: string
     tasks: Array<Schema.Types.ObjectId>
     dateOfRegistration: Date
+    theme: boolean
 }
 
 const userSchema = new Schema<IUser>({
@@ -17,7 +18,8 @@ const userSchema = new Schema<IUser>({
     position: { type: String },
     color: { type: String, default: '#9e9e9e' },
     tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }],
-    dateOfRegistration: { type: Date, default: Date.now }
+    dateOfRegistration: { type: Date, default: Date.now },
+    theme: {type: Boolean, default: true}
 })
 
 const userModel = model<IUser>('User', userSchema)

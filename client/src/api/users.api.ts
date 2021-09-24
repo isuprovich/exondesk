@@ -9,6 +9,7 @@ export type TUser = {
     email: string
     name: string
     color: string
+    theme: boolean
 }
 export type TUserArray = [TUser]
 export type TUsers = {users: TUserArray}
@@ -16,6 +17,7 @@ export type TNewUserData = {
     name: string
     email: string
     color: string
+    theme: boolean
 }
 
 export const usersAPI = {

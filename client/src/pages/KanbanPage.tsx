@@ -81,7 +81,7 @@ const KanbanPage: React.FC = () => {
     }
     if (!tasks) return <div>LOADING...</div>
     return <DragDropContext onDragEnd={onDragEnd}>
-        <Paper variant='outlined' style={{ padding: '8px', margin: '8px', overflow: 'auto', height: '100%' }}>
+        <Paper variant='outlined' style={{ margin: '8px', overflow: 'auto', height: '100%' }}>
             <Grid container spacing={1} direction="row" style={{width: 'max-content'}}>
                 <Grid key={"noStatus"} item>
                     <KanbanColumn column={emptyColumn} tasks={tasks} />

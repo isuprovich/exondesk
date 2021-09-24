@@ -15,9 +15,8 @@ type TTaskCardStyleProps = {
 const TaskCardd = styled(Container)<TTaskCardStyleProps>`
     display: flex;
     align-items: center;
-    padding: 10px;
     margin-bottom: 8px;
-    background-color: ${props => props.$isDragging ? '#bbdefb' : 'white'};
+    background-color: ${props => props.$isDragging ? '#bbdefb' : ''};
 `
 const handleDelete = () => {
     console.info('You clicked the delete icon.');
@@ -37,7 +36,7 @@ const Task: React.FC<TaskPropsType> = ({ task, index }) => {
                     innerRef={provided.innerRef}
                     $isDragging={snapshot.isDragging}
                 >
-                    <TaskCard task={task} />
+                    <TaskCard task={task} kanban={true} />
                 </TaskCardd>
             )}
         </Draggable>

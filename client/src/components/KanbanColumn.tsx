@@ -18,7 +18,7 @@ type TIsDraggingOver = {
 
 const ColumnContainer = styled(Container) <TIsDraggingOver>`
     transition: background-color 0.2s ease;
-    background-color: ${props => props.$isDraggingOver ? '#e3f2fd' : 'white'};
+    background-color: ${props => props.$isDraggingOver ? '#e3f2fd86' : ''};
     height: calc(100% - 36px);
 `
 
