@@ -1,9 +1,10 @@
 import { Switch, Route, Redirect } from 'react-router-dom'
 import React, { useEffect } from 'react'
 import { useAuth } from './hooks/auth.hook'
-import { SnackbarProvider } from 'notistack';
+import { SnackbarProvider } from 'notistack'
 import { AuthContext } from './context/AuthContext'
-import { Container, createTheme, CssBaseline, ThemeProvider, Typography } from '@material-ui/core'
+import { createTheme, CssBaseline, ThemeProvider, Typography } from '@material-ui/core'
+import Container from '@material-ui/core/Container'
 import Navbar from './components/Navbar'
 import { getStatuses, getPriorities } from './redux/reducers/tags.reducer'
 import { getCurrentUser, getUsers } from './redux/reducers/users.reducer'
@@ -13,7 +14,7 @@ import KanbanPage from './pages/KanbanPage'
 import SettingsPage from './pages/SettingsPage'
 import TaskPage from './pages/TaskPage'
 import TasksListPage from './pages/TasksListPage'
-import { setCurrentUser } from './redux/selectors/users.selector';
+import { setCurrentUser } from './redux/selectors/users.selector'
 
 const App: React.FC = () => {
   const { token, login, logout, userId, ready } = useAuth()
@@ -111,7 +112,7 @@ const App: React.FC = () => {
         <ThemeProvider theme={user?.theme ? darkTheme : theme}>
           <CssBaseline />
           {userId !== "" && <Navbar logout={logout} userId={userId} />}
-          <div style={{ height: '100vh', overflow: 'hidden', padding: '64px 0 0 0' }}>
+          <div style={{ height: '100vh',  overflow: 'hidden', padding: '64px 0 0 0' }}>
             <div style={{ height: '97%' }}>
               {isAuth && <Switch>
                 <Route path='/kanban' render={() => <KanbanPage />} />

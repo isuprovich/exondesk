@@ -209,12 +209,12 @@ const TasksListPage: React.FC = () => {
                     </form>
                 </Paper>
             </Grid>
-            <Grid item style={{ flexGrow: 1, height: '100%' }}>
+            <Grid item style={{ flexGrow: 1, height: '100%', width: '100%' }}>
                 <Paper variant="outlined" style={{ padding: '8px', overflow: 'auto', maxHeight: '100%' }}>
                     <Grid container direction="column" spacing={1}>
                         {tasks.length === 0 && <Typography align="center">Задач нет</Typography>}
                         {tasks.map(task => {
-                            return <Grid item key={task._id}><TaskCard task={task} handleOpenDelete={handleOpenDelete} handleClick={handleClick} /></Grid>
+                            return <Grid item key={task._id} style={{width: '100%'}}><TaskCard task={task} handleOpenDelete={handleOpenDelete} handleClick={handleClick} /></Grid>
                         })}
                     </Grid>
                 </Paper>

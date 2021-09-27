@@ -37,9 +37,9 @@ const TaskCard: React.FC<ITaskCard> = ({ task, handleOpenDelete, handleClick, ka
     const [expanded, setExpanded] = useState(false)
     return <Paper variant="outlined" style={{ width: "100%" }}>
         <Grid container alignItems="stretch">
-            <Grid item container alignItems="stretch">
+            <Grid item container alignItems="stretch" wrap="nowrap">
                 <Grid item zeroMinWidth style={{ display: 'flex', flexDirection: "row", flexGrow: 1, padding: "4px 5px" }}>
-                    <Typography noWrap>
+                    <Typography noWrap component="span">
                         <strong>MS-{task.number}</strong> {task.taskname}
                     </Typography>
                 </Grid>
