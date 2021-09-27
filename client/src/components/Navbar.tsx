@@ -45,14 +45,14 @@ const Navbar: React.FC<TNavbar> = ({ logout, userId }) => {
       <AppBar>
         <Toolbar>
           <Typography className={s.logo}>Exondesk</Typography>
-          <ButtonGroup size="small" color="primary" variant="text">
+          <ButtonGroup size="small" variant="text">
             <Button color="inherit" onClick={() => setSettingsEdit(true)}><SettingsRoundedIcon /></Button>
             <Button component={Link} to='/newtask' color="inherit"><AddCircleOutlineRoundedIcon /></Button>
             <Button component={Link} to='/tasks' color="inherit">Список задач</Button>
             <Button component={Link} to='/kanban' color="inherit">Доска</Button>
           </ButtonGroup>
           <div style={{ flexGrow: 1 }}></div>
-          <ButtonGroup size="small" color="primary" variant="text">
+          <ButtonGroup size="small" variant="text">
             <Button
               color="inherit"
               onClick={() => setProfileEdit(true)}

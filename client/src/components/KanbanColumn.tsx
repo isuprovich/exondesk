@@ -1,11 +1,10 @@
-import { Button, Container, Typography } from "@material-ui/core"
+import { Button, Typography, Grid } from "@material-ui/core"
 import { Droppable } from "react-beautiful-dnd"
 import styled from "styled-components"
 import { TTagInner } from "../api/tags.api"
-import { setTasks } from "../redux/selectors/tasks.selector"
-import { useSelector } from "react-redux"
 import KanbanTask from "./KanbanTask"
 import { TTask } from "../api/tasks.api"
+import { Link } from "react-router-dom"
 
 type TColumnProps = {
     column: TTagInner,
@@ -16,10 +15,12 @@ type TIsDraggingOver = {
     $isDraggingOver: boolean
 }
 
-const ColumnContainer = styled(Container) <TIsDraggingOver>`
+const ColumnContainer = styled.div <TIsDraggingOver>`
     transition: background-color 0.2s ease;
     background-color: ${props => props.$isDraggingOver ? '#e3f2fd86' : ''};
     height: calc(100% - 36px);
+    padding: 0;
+    width: 100%;
 `
 
 const KanbanColumn: React.FC<TColumnProps> = ({ column, tasks }) => {
@@ -31,33 +32,37 @@ const KanbanColumn: React.FC<TColumnProps> = ({ column, tasks }) => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            maxWidth: '500px'
+            maxWidth: '450px',
         }}>
-            <Container>
-                <Typography variant="h6" component="h6" align="center">{column.label}</Typography>
-            </Container>
             <Droppable droppableId={column._id}>
                 {(provided, snapshot) => (
                     <ColumnContainer
                         {...provided.droppableProps}
-                        innerRef={provided.innerRef}
+                        ref={provided.innerRef}
                         $isDraggingOver={snapshot.isDraggingOver}
-                        style={{ padding: '5px', borderRadius: '2px' }}
+                        style={{padding: '8px'}}
                     >
-                        {tasks?.map((task, index) => {
-                            if (task.status?._id === column._id) {
-                                return (
-                                    <KanbanTask key={task._id} task={task} index={index} />
-                                )
-                            }
-                            if (task.status === null && column._id === "1") {
-                                return (
-                                    <KanbanTask key={task._id} task={task} index={index} />
-                                )
-                            }
-                        })}
-                        {provided.placeholder}
-                        <Button variant='outlined' style={{ display: 'block', margin: '0 auto' }}>+</Button>
+                        <Grid container spacing={1}>
+                            <Grid item>
+                                <Typography variant="h6" align="center">{column.label}</Typography>
+                            </Grid>
+                            {tasks?.map((task, index) => {
+                                if (task.status?._id === column._id) {
+                                    return (
+                                        <Grid item style={{width: '100%'}}><KanbanTask key={task._id} task={task} index={index} /></Grid>
+                                    )
+                                }
+                                if (task.status === null && column._id === "1") {
+                                    return (
+                                        <Grid item style={{width: '100%'}}><KanbanTask key={task._id} task={task} index={index} /></Grid>
+                                    )
+                                }
+                            })}
+                            <Grid item>{provided.placeholder}</Grid>
+                            <Grid item container justifyContent="center">
+                                <Button component={Link} to={`/newtask/?id=${column._id}`} variant='outlined'>Создать задачу</Button>
+                            </Grid>
+                        </Grid>
                     </ColumnContainer>
                 )}
             </Droppable>

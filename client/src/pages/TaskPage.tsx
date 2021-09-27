@@ -8,7 +8,7 @@ import { tasksAPI, TNewTask } from '../api/tasks.api'
 import { useSelector, useDispatch } from 'react-redux'
 import { isLoadingUsers, setUsers } from '../redux/selectors/users.selector'
 import { setStatuses, setPriorities, isLoadingPriorities, isLoadingStatuses, setSides } from '../redux/selectors/tags.selector'
-import { Link, useHistory, useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { isLoadingTask, setTask } from '../redux/selectors/tasks.selector'
 import { getTask } from '../redux/reducers/tasks.reducer'
 
@@ -123,6 +123,9 @@ const TaskPage: React.FC<TTaskPage> = ({ editMode, isReadOnly }) => {
         }
     }
     //#endregion NEW TASK
+    const cancelNewTask = () => {
+        history.goBack()
+    }
 
     if (isFetchingTask) return <LinearProgress />
     return <form style={{padding: '8px'}} onSubmit={handleSubmit(createTask)}>
@@ -197,7 +200,7 @@ const TaskPage: React.FC<TTaskPage> = ({ editMode, isReadOnly }) => {
                                 <Button type="submit" variant="contained" color="primary">
                                     {!isEdit ? 'Создать' : 'Изменить'}
                                 </Button>
-                                <Button variant="contained" color="secondary" component={Link} to='/tasks'>
+                                <Button variant="contained" color="secondary" onClick={cancelNewTask}>
                                     Отмена
                                 </Button>
                             </ButtonGroup>

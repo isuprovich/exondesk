@@ -1,4 +1,4 @@
-import { Container, Paper } from '@material-ui/core'
+import { Container } from '@material-ui/core'
 import { Draggable } from "react-beautiful-dnd"
 import styled from "styled-components"
 import { TTask } from '../api/tasks.api'
@@ -12,15 +12,12 @@ type TTaskCardStyleProps = {
     $isDragging: boolean
 }
 
-const TaskCardd = styled(Container)<TTaskCardStyleProps>`
+const TaskCardDroppable = styled(Container)<TTaskCardStyleProps>`
     display: flex;
     align-items: center;
-    margin-bottom: 8px;
+    padding: 0;
     background-color: ${props => props.$isDragging ? '#bbdefb' : ''};
 `
-const handleDelete = () => {
-    console.info('You clicked the delete icon.');
-};
 
 const handleClick = () => {
     console.info('You clicked the Chip.');
@@ -28,16 +25,16 @@ const handleClick = () => {
 
 const Task: React.FC<TaskPropsType> = ({ task, index }) => {
     return (
-        <Draggable draggableId={task._id} index={index}>
+        <Draggable draggableId={task.number.toString()} index={index}>
             {(provided, snapshot) => (
-                <TaskCardd
+                <TaskCardDroppable
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     innerRef={provided.innerRef}
                     $isDragging={snapshot.isDragging}
                 >
                     <TaskCard task={task} kanban={true} />
-                </TaskCardd>
+                </TaskCardDroppable>
             )}
         </Draggable>
     )

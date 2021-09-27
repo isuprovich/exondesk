@@ -17,12 +17,12 @@ export type TTasks = {
     tasks: TTasksArray
 }
 export type TNewTask = {
-    taskname: string,
-    status: string,
-    priority: string,
-    side: string,
-    executor: string,
-    description: string
+    taskname?: string,
+    status?: string,
+    priority?: string,
+    side?: string,
+    executor?: string,
+    description?: string
 }
 
 export const tasksAPI = {

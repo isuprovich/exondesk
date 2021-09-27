@@ -27,7 +27,19 @@ const App: React.FC = () => {
 
   const theme = createTheme({
     palette: {
-      type: "light"
+      type: "light",
+      primary: {
+        light: "#80cbc4",
+        main: "#009688",
+        dark: "#00796b",
+        contrastText: "#ffffff"
+      },
+      secondary: {
+        light: "#ef5350",
+        main: "#e53935",
+        dark: "#b71c1c",
+        contrastText: "#ffffff"
+      }
     },
     overrides: {
       MuiCssBaseline: {
@@ -49,9 +61,26 @@ const App: React.FC = () => {
   })
   const darkTheme = createTheme({
     palette: {
-      type: "dark"
+      type: "dark",
+      primary: {
+        light: "#b2dfdb",
+        main: "#4db6ac",
+        dark: "#009688",
+        contrastText: "#ffffff"
+      },
+      secondary: {
+        light: "#ef5350",
+        main: "#e53935",
+        dark: "#b71c1c",
+        contrastText: "#ffffff"
+      }
     },
     overrides: {
+      MuiAppBar: {
+        colorPrimary: {
+          backgroundColor: '#424242'
+        }
+      },
       MuiCssBaseline: {
         '@global': {
           '::-webkit-scrollbar': {
