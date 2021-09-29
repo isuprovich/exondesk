@@ -79,7 +79,7 @@ const TasksListPage: React.FC = () => {
     //#endregion
 
     //Рендер
-    if (!tasks) return <LinearProgress />
+    if (!tasks) return <LinearProgress style={{position: "absolute"}} />
     return <>
         <Grid container direction="row" spacing={1} style={{ height: '100%', padding: '8px' }}>
             <Grid item>
@@ -209,7 +209,7 @@ const TasksListPage: React.FC = () => {
                     </form>
                 </Paper>
             </Grid>
-            <Grid item style={{ flexGrow: 1, height: '100%', width: '100%' }}>
+            <Grid item style={{ flexGrow: 1, height: '100%', width: '50%' }}>
                 <Paper variant="outlined" style={{ padding: '8px', overflow: 'auto', maxHeight: '100%' }}>
                     <Grid container direction="column" spacing={1}>
                         {tasks.length === 0 && <Typography align="center">Задач нет</Typography>}

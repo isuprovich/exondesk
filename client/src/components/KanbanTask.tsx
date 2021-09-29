@@ -19,9 +19,9 @@ const TaskCardDroppable = styled(Container)<TTaskCardStyleProps>`
     background-color: ${props => props.$isDragging ? '#bbdefb' : ''};
 `
 
-const handleClick = () => {
-    console.info('You clicked the Chip.');
-};
+// const handleClick = () => {
+//     console.info('You clicked the Chip.');
+// };
 
 const Task: React.FC<TaskPropsType> = ({ task, index }) => {
     return (
